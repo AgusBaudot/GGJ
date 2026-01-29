@@ -23,7 +23,7 @@ public class MaskManager : MonoBehaviour
 
         if (Masks.Count >= MAX_MASK_STACK_SIZE)
             return false;
-        
+
         if (CurrentMask != null)
             CurrentMask.OnBreak -= BreakCurrentMask;
 
@@ -34,7 +34,7 @@ public class MaskManager : MonoBehaviour
 
         CurrentMask.OnBreak += BreakCurrentMask;
 
-        OnMaskEquipped?.Invoke(data);
+        OnMaskEquipped?.Invoke(maskData);
 
         return true;
 
