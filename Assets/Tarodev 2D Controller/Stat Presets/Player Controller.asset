@@ -9,35 +9,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d06c371d62ef0d4408499a7d160c31d4, type: 3}
-  m_Name: True form player stats
+  m_Script: {fileID: 11500000, guid: 10b823639e543694d890e5f8a77be1af, type: 3}
+  m_Name: Player Controller
   m_EditorClassIdentifier: 
   PlayerLayer:
     serializedVersion: 2
     m_Bits: 64
-  GroundLayers:
-    serializedVersion: 2
-    m_Bits: 8
   SnapInput: 1
   VerticalDeadZoneThreshold: 0.3
   HorizontalDeadZoneThreshold: 0.1
-  MaxSpeed: 12
+  MaxSpeed: 14
   Acceleration: 120
   GroundDeceleration: 60
   AirDeceleration: 30
   GroundingForce: -1.5
   GrounderDistance: 0.05
-  JumpPower: 24
-  MaxFallSpeed: 30
-  FallAcceleration: 80
+  JumpPower: 36
+  MaxFallSpeed: 40
+  FallAcceleration: 110
   JumpEndEarlyGravityModifier: 3
-  CoyoteTime: 0.15
-  JumpBuffer: 0.2
-  DashSpeed: 18
-  DashDuration: 0.25
-  DashCooldown: 0.8
-  DashBuffer: 0.2
-  TeleportDistance: 4.5
-  TeleportCooldown: 3
-  TeleportBuffer: 0.2
-  BaseDamage: 1
+  CoyoteFrames: 7
+  JumpBufferFrames: 7

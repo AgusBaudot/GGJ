@@ -40,6 +40,19 @@ public class MaskManager : MonoBehaviour
             OnPlayerDied?.Invoke();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            Debug.LogWarning("Implement aim");
+        }
+        
+        if (Input.GetKey(KeyCode.Q))
+        {
+            Debug.LogError("Not found");
+        }
+    }
+
     private void OnDestroy()
     {
         if (CurrentMask != null)

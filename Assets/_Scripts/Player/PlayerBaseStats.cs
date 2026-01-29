@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Base stats for true form.
+/// </summary>
+
 [CreateAssetMenu]
 public class PlayerBaseStats : ScriptableObject
 {
@@ -58,6 +62,29 @@ public class PlayerBaseStats : ScriptableObject
     [Tooltip("The amount of time we buffer a jump. This allows jump input before actually hitting the ground")]
     public float JumpBuffer = .2f;
 
+    [Header("DASHING")]
+    [Tooltip("The velocity multiplier multiplied when player is dashing")]
+    public float DashSpeed = 2f;
+
+    [Tooltip("The amount of time the dash lasts")]
+    public float DashDuration = 0.75f;
+
+    [Tooltip("The amount of time the player has to wait before using the dash again")]
+    public float DashCooldown = 1.5f;
+
+    [Tooltip("The amount of time we buffer a dash. This allows dash input before actually having a dash available")]
+    public float DashBuffer = .2f;
+    
+    [Header("TELEPORT")]
+    [Tooltip("Distance in units that the player will be teleported")]
+    public float TeleportDistance = 3f;
+    
+    [Tooltip("The amount of time the player has to wait before using the teleport again")]
+    public float TeleportCooldown = 3f;
+    
+    [Tooltip("The amount of time we buffer a teleport. This allows teleport input before actually having a teleport available")]
+    public float  TeleportBuffer = .2f;
+    
     [Header("DAMAGE")] [Tooltip("The amount of damage the player inflicts in its true form.")]
     public float BaseDamage = 5;
 }
