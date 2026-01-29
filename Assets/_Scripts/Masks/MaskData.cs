@@ -15,12 +15,14 @@ public class MaskData : ScriptableObject
     public float JumpForceModifier = 1;
     [Tooltip("This number will be multiplied to the base dmg")]
     public float DmgModifier = 1;
-    //Attack types? Movesets?
+    [Header("Attack")]
+    [Tooltip("Does the attack change?")]
+    public bool ChangedAttack;
     
     [Header("Optional")]
     public bool HasDash;
-    public bool HasShield;
     public bool HasDoubleJump;
+    public bool HasTeleport;
     
     [Header("Visuals")]
     public Sprite MaskSprite;

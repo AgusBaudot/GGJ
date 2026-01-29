@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour, IPlayerController
 {
     [SerializeField] private PlayerBaseStats _stats;
+    [SerializeField] private MaskManager _maskManager;
+
     private Rigidbody2D _rb;
     private CapsuleCollider2D _col;
     private FrameInput _frameInput;
@@ -41,7 +43,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C),
             JumpHeld = Input.GetButton("Jump") || Input.GetKey(KeyCode.C),
-            Move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
+            Move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")),
+            PrimaryDown = Input.GetButtonDown("Primary") || Input.GetKeyDown(KeyCode.J),
+            SecondaryDown = Input.GetButtonDown("Secondary") || Input.GetKeyDown(KeyCode.K)
         };
 
         if (_stats.SnapInput)
@@ -111,7 +115,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
     }
 
     #endregion
-
 
     #region Jumping
 
@@ -200,6 +203,8 @@ public struct FrameInput
     public bool JumpDown;
     public bool JumpHeld;
     public Vector2 Move;
+    public bool PrimaryDown;
+    public bool SecondaryDown;
 }
 
 public interface IPlayerController
