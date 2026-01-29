@@ -1,5 +1,5 @@
 using System;
-using System.Reflection.Metadata;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -13,15 +13,15 @@ public class MaskManager : MonoBehaviour
     public event Action<MaskData> OnMaskEquipped;
     public event Action OnMaskBroken;
     public event Action OnPlayerDied;
-    
-    public Stack<MaskInstance> Masks;
-    public MaskInstance CurrentMask { get; private set; }
 
+    public MaskInstance CurrentMask =>
+        _maskStack.Count > 0 ? _maskStack.Peek() : null;
+
+    private Stack<MaskInstance> _maskStack = new();
 
     public bool AddMaskToStack(MaskData maskData)
     {
-
-        if (Masks.Count >= MAX_MASK_STACK_SIZE)
+        if (_maskStack.Count >= MAX_MASK_STACK_SIZE)
             return false;
 
         if (CurrentMask != null)
@@ -29,30 +29,29 @@ public class MaskManager : MonoBehaviour
 
         var maskInstance = new MaskInstance(maskData);
 
-        Masks.Push(maskInstance);
-        CurrentMask = maskInstance;
+        _maskStack.Push(maskInstance);
 
         CurrentMask.OnBreak += BreakCurrentMask;
 
         OnMaskEquipped?.Invoke(maskData);
 
         return true;
-
     }
-    
+
     public void BreakCurrentMask()
     {
-        if(CurrentMask == null) 
+        if (CurrentMask == null)
             return;
-            
+        
         CurrentMask.OnBreak -= BreakCurrentMask;
+        _maskStack.Pop();
+        
+        OnMaskBroken?.Invoke();
 
-        Masks.Pop();
-        CurrentMask = maskStack.Count > 0 
-            ? maskStack.Peek() 
-            : null;
-
-        OnMaskBroken?Invoke();
+        if (CurrentMask == null) return;
+        
+        CurrentMask.OnBreak += BreakCurrentMask;
+        OnMaskEquipped?.Invoke(CurrentMask.Data);
     }
 
     public bool IsMaskless() => CurrentMask == null;
@@ -63,19 +62,6 @@ public class MaskManager : MonoBehaviour
             CurrentMask.TakeDamage(amount);
         else
             OnPlayerDied?.Invoke();
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            Debug.LogWarning("Implement aim");
-        }
-        
-        if (Input.GetKey(KeyCode.Q))
-        {
-            Debug.LogError("Not found");
-        }
     }
 
     private void OnDestroy()

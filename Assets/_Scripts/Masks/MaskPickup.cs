@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 /// <summary>
@@ -21,6 +20,6 @@ public class MaskPickup : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
-        if(_maskManager.addMaskToStack(_data)) Destroy(gameObject);
+        if(_maskManager.AddMaskToStack(_data)) Destroy(gameObject);
     }
 }
