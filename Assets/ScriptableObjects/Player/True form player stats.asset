@@ -33,12 +33,12 @@ MonoBehaviour:
   JumpEndEarlyGravityModifier: 3
   CoyoteTime: 0.15
   JumpBuffer: 0.2
-  DashSpeed: 18
-  DashDuration: 0.25
+  DashSpeed: 28
+  DashDuration: 0.15
   DashCooldown: 0.8
   DashBuffer: 0.2
-  TeleportDistance: 4.5
-  TeleportDuration: 0.2
+  TeleportDistance: 5.5
+  TeleportDuration: 0.4
   TeleportCooldown: 3
   TeleportBuffer: 0.2
   BaseDamage: 1
