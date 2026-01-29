@@ -1,4 +1,5 @@
 using System;
+using System.Reflection.Metadata;
 using UnityEngine;
 
 /// <summary>
@@ -7,12 +8,39 @@ using UnityEngine;
 
 public class MaskManager : MonoBehaviour
 {
+    private const int MAX_MASK_STACK_SIZE = 3;
+
     public event Action<MaskData> OnMaskEquipped;
     public event Action OnMaskBroken;
     public event Action OnPlayerDied;
     
+    public Stack<MaskInstance> Masks;
     public MaskInstance CurrentMask { get; private set; }
+
+
+    public bool AddMaskToStack(MaskData maskData)
+    {
+        if (Masks.Count < MAX_MASK_STACK_SIZE) {
+            var maskInstance = new MaskInstance(maskData);
+
+            Masks.Push(maskInstance);
+            CurrentMask = maskInstance;
+
+            return true;
+        }
+
+        return false;
+    }
     
+    public void BreakCurrentMask()
+    {
+        if(Masks.Count == 0) 
+            return;
+
+        Masks.Pop();
+        CurrentMask = maskStack.Count > 0 ? maskStack.Peek() : null;
+    }
+
     public void EquipMask(MaskData data)
     {
         if (CurrentMask != null)
