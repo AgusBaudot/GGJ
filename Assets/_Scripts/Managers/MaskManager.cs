@@ -20,16 +20,24 @@ public class MaskManager : MonoBehaviour
 
     public bool AddMaskToStack(MaskData maskData)
     {
-        if (Masks.Count < MAX_MASK_STACK_SIZE) {
-            var maskInstance = new MaskInstance(maskData);
 
-            Masks.Push(maskInstance);
-            CurrentMask = maskInstance;
+        if (Masks.Count >= MAX_MASK_STACK_SIZE)
+            return false;
+        
+        if (CurrentMask != null)
+            CurrentMask.OnBreak -= BreakCurrentMask;
 
-            return true;
-        }
+        var maskInstance = new MaskInstance(maskData);
 
-        return false;
+        Masks.Push(maskInstance);
+        CurrentMask = maskInstance;
+
+        CurrentMask.OnBreak += BreakCurrentMask;
+
+        OnMaskEquipped?.Invoke(data);
+
+        return true;
+
     }
     
     public void BreakCurrentMask()
@@ -45,16 +53,6 @@ public class MaskManager : MonoBehaviour
             : null;
 
         OnMaskBroken?Invoke();
-    }
-
-    public void EquipMask(MaskData data)
-    {
-        if (CurrentMask != null)
-            CurrentMask.OnBreak -= BreakCurrentMask;
-    
-        CurrentMask = new MaskInstance(data);
-        CurrentMask.OnBreak += BreakCurrentMask;
-        OnMaskEquipped?.Invoke(data);
     }
 
     public bool IsMaskless() => CurrentMask == null;
