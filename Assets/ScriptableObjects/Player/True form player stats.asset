@@ -38,6 +38,7 @@ MonoBehaviour:
   DashCooldown: 0.8
   DashBuffer: 0.2
   TeleportDistance: 4.5
+  TeleportDuration: 0.2
   TeleportCooldown: 3
   TeleportBuffer: 0.2
   BaseDamage: 1

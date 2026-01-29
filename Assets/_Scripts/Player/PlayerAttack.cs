@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// 
+/// VERY primitive player attack. PlayerController will call the corresponding attack. Logic is not handled here, only behavior.
 /// </summary>
 
 public class PlayerAttack : MonoBehaviour

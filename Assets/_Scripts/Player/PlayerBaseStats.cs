@@ -79,6 +79,9 @@ public class PlayerBaseStats : ScriptableObject
     [Tooltip("Distance in units that the player will be teleported")]
     public float TeleportDistance = 3f;
     
+    [Tooltip("The amount of time the player dissapears before re-appearing post-teleport")]
+    public float TeleportDuration = .2f;
+    
     [Tooltip("The amount of time the player has to wait before using the teleport again")]
     public float TeleportCooldown = 3f;
     

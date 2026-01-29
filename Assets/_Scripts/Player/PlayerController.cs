@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 /// <summary>
@@ -105,7 +104,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             ApplyDashMovement();
         }
-        else
+        else if (!_isDashing && !_isTeleporting)
         {
             HandleDirection();
             HandleGravity();
@@ -173,6 +172,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         //If player doesn't want to jump or didn't jump inside buffer time return.
         if (!_jumpToConsume && !HasBufferedJump) return;
+
+        if (_isDashing || _isTeleporting) return;
 
         //If player is grounded or still has coyote time use first jump.
         if (_grounded || CanUseCoyote) ExecuteJump();
@@ -280,24 +281,34 @@ public class PlayerController : MonoBehaviour, IPlayerController
     #region Teleport
 
     private bool _teleportBuffered;
-    private float _timeTeleportPressed;
     private bool _canTeleport = true;
+	private bool _isTeleporting;
+	private Vector2 _teleportTarget;
+    private float _timeTeleportPressed;
+    private SpriteRenderer _renderer;
 
     private bool HasBufferedTeleport =>
         _teleportBuffered && _time < _timeTeleportPressed + _stats.TeleportBuffer;
 
     private void HandleTeleport()
     {
+        if (_isTeleporting) return;
         if (!HasBufferedTeleport || !_canTeleport || !_devTools._hasTeleport) return;
 
+        _teleportBuffered = false;
+        _canTeleport = false;
+
         Vector2 dir = new Vector2(GetDirection, 0f);
-        Vector2 origin = _rb.position;
+        Vector2 origin = _col.bounds.center;
         float distance = _stats.TeleportDistance;
+
+        bool cached = Physics2D.queriesStartInColliders;
+        Physics2D.queriesStartInColliders = true;
         
         //Check if space is free
         RaycastHit2D hit = Physics2D.CapsuleCast(
             origin,
-            _col.size,
+            _col.size * 0.9f,
             _col.direction,
             0f,
             dir,
@@ -305,15 +316,52 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _stats.GroundLayers
         );
 
-        Vector2 targetPos = hit
-            ? hit.point - dir * 0.1f
+        _teleportTarget = hit
+            ? hit.centroid
             : origin + dir * distance;
 
-        _rb.position = targetPos;
-        _frameVelocity = Vector2.zero;
+        _teleportTarget.y -= _col.bounds.center.y - _rb.position.y;
+        //_teleportTarget.y -= _col.offset.y;
         
-        _teleportBuffered = false;
-        _canTeleport = false;
+        if (!_renderer)
+            _renderer = GetComponentInChildren<SpriteRenderer>();
+
+        StartCoroutine(TeleportRoutine());
+    }
+    
+    private IEnumerator TeleportRoutine()
+    {
+        _isTeleporting = true;
+    
+        // 1. Kill both visuals and physics immediately
+        _renderer.enabled = false;
+        _frameVelocity = Vector2.zero;
+        _rb.velocity = Vector2.zero;
+        
+        var trail = GetComponentInChildren<TrailRenderer>();
+        if (trail) trail.emitting = false;
+
+        yield return Helpers.GetWait(_stats.TeleportDuration);
+    
+        // 2. Move the Rigidbody
+        _rb.position = _teleportTarget;
+        _rb.velocity = Vector2.zero;
+        
+        // 3. Force the Transform to match the Rigidbody position now
+        transform.position = _teleportTarget;
+
+        // 4. Force physics to catch up immediately
+        Physics2D.SyncTransforms();
+        
+        // 5. Wait two frames.
+        // Frame 1: Physics updates and Camera recognizes new position. Frame 2: Camera snaps to new position and renders.
+        yield return null;
+        yield return null;
+        
+        _renderer.enabled = true;
+        _isTeleporting = false;
+
+        if (trail) trail.emitting = true;
 
         StartCoroutine(TeleportCooldown());
     }
@@ -325,7 +373,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
     }
 
     #endregion
-
 
     #region Horizontal
 
@@ -368,6 +415,23 @@ public class PlayerController : MonoBehaviour, IPlayerController
     }
 
     #endregion
+    
+    private Vector2 GetSnappedTeleportPosition(RaycastHit2D hit)
+    {
+        Vector2 offset = Vector2.zero;
+        float skin = 0.05f;
+
+        if (Vector2.Dot(hit.normal, Vector2.up) > 0.5f)
+            offset = Vector2.up * skin;          // landed on top
+        else if (Vector2.Dot(hit.normal, Vector2.down) > 0.5f)
+            offset = Vector2.down * skin;        // hit ceiling
+        else if (Vector2.Dot(hit.normal, Vector2.left) > 0.5f)
+            offset = Vector2.left * skin;        // hit right wall
+        else if (Vector2.Dot(hit.normal, Vector2.right) > 0.5f)
+            offset = Vector2.right * skin;       // hit left wall
+
+        return hit.point + offset;
+    }
 
     private void ApplyMovement() => _rb.velocity = _frameVelocity;
 
@@ -397,6 +461,9 @@ public interface IPlayerController
     public event Action Jumped;
     public Vector2 FrameInput { get; }
 }
+//Test teleport (both grounded and disappear).
+//Dash & tp override jump.
+//When final position of tp collides with obstacle, check where it "should" be (if collision happens in bottom-half, spawn player on top of platform. Left-half, move it to the right.
 
 /*
 Platformer-ish:
