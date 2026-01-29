@@ -34,11 +34,17 @@ public class MaskManager : MonoBehaviour
     
     public void BreakCurrentMask()
     {
-        if(Masks.Count == 0) 
+        if(CurrentMask == null) 
             return;
+            
+        CurrentMask.OnBreak -= BreakCurrentMask;
 
         Masks.Pop();
-        CurrentMask = maskStack.Count > 0 ? maskStack.Peek() : null;
+        CurrentMask = maskStack.Count > 0 
+            ? maskStack.Peek() 
+            : null;
+
+        OnMaskBroken?Invoke();
     }
 
     public void EquipMask(MaskData data)
@@ -49,13 +55,6 @@ public class MaskManager : MonoBehaviour
         CurrentMask = new MaskInstance(data);
         CurrentMask.OnBreak += BreakCurrentMask;
         OnMaskEquipped?.Invoke(data);
-    }
-
-    public void BreakCurrentMask()
-    {
-        CurrentMask.OnBreak -= BreakCurrentMask;
-        CurrentMask = null;
-        OnMaskBroken?.Invoke();
     }
 
     public bool IsMaskless() => CurrentMask == null;
