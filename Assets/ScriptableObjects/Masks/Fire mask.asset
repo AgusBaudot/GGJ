@@ -17,5 +17,7 @@ MonoBehaviour:
   JumpForceModifier: 1
   DmgModifier: 2
   AttackType: 1
-  SecondaryType: 
+  RangedProjectile: {fileID: 11400000, guid: 3f3a47ec3390f8a49b115e044792d65a, type: 2}
+  SecondaryType: 0
+  DoubleJump: 0
   MaskSprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}

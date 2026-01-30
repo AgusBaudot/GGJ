@@ -19,6 +19,10 @@ public class MaskData : ScriptableObject
     [Header("ATTACK")]
     [Tooltip("Which attack does this mask provide")]
     public AttackType AttackType;
+    
+    //Optional
+    [Tooltip("Assign with corresponding projectile. If this mask doesn't have a ranged attack type, leave this field empty.")]
+    public RangedAttackData RangedProjectile; 
 
     [Header("OPTIONAL")]
     [Tooltip("Which secondary ability does this mask provide")]

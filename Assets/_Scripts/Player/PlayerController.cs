@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// In charge of everything the player does. Variables are in PlayerBaseStats.cs
+/// In charge of everything the player does. Variables are in PlayerBaseStats
 /// </summary>
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private FrameInput _frameInput;
     private Vector2 _frameVelocity;
     private bool _cachedQueryStartInColliders;
+    private MaskPickup _nearbyMask;
 
     #region Interface
 
@@ -77,6 +78,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
                 ? -1
                 : 1;
 
+        if (_frameInput.GrabDown && _nearbyMask != null)
+        {
+            TryGrabMask();
+        }
+
         if (_frameInput.JumpDown)
         {
             _jumpToConsume = true;
@@ -85,7 +91,14 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         if (_frameInput.PrimaryDown)
         {
-            _playerAttack.TryAttack(_maskManager.GetCurrentAttack());
+            var attack = _maskManager.GetCurrentAttack();
+
+            //Delegate attack to PlayerAttack.cs
+            _playerAttack.TryAttack(attack);
+            
+            //Make movement-based attack if applicable.
+            if (attack == AttackType.Basic && !_isBursting && !_isTeleporting)
+                TryStartBursting(_stats.TackleData);
         }
 
         if (_frameInput.SecondaryDown)
@@ -96,8 +109,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
                     return;
 
                 case SecondaryType.Dash:
-                    _dashBuffered = true;
-                    _timeDashWasPressed = _time;
+                    // _dashBuffered = true;
+                    // _timeDashWasPressed = _time;
+                    TryStartBursting(_stats.DashData);
                     break;
 
                 case SecondaryType.Teleport:
@@ -113,18 +127,26 @@ public class PlayerController : MonoBehaviour, IPlayerController
         CheckCollisions();
 
         HandleJump();
-        HandleDash();
+        // HandleDash();
         HandleTeleport();
-        if (_isDashing)
+        // if (_isDashing)
+        // {
+        //     ApplyDashMovement();
+        // }
+        // else if (!_isDashing && !_isTeleporting)
+        // {
+        //     HandleDirection();
+        //     HandleGravity();
+        // }
+        if (_isBursting)
         {
-            ApplyDashMovement();
+            ApplyBurstMovement();
         }
-        else if (!_isDashing && !_isTeleporting)
+        else if (!_isBursting && !_isTeleporting)
         {
             HandleDirection();
             HandleGravity();
         }
-
         ApplyMovement();
     }
 
@@ -167,6 +189,32 @@ public class PlayerController : MonoBehaviour, IPlayerController
         Physics2D.queriesStartInColliders = _cachedQueryStartInColliders;
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!other.TryGetComponent(out MaskPickup mask)) return;
+        Debug.LogWarning("Show 'E' sprite above player's head");
+        _nearbyMask = mask;
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (!other.TryGetComponent(out MaskPickup mask)) return;
+        if (_nearbyMask == mask)
+            _nearbyMask = null;
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (!_isBursting || _currentBurst == null) return;
+
+        if (other.gameObject.TryGetComponent(out Enemy enemy))
+            _playerAttack.OnBurstHitEnemy(enemy, _currentBurst);
+
+        //Maybe add some audio? Little knockback backwards?
+        Debug.LogWarning("Differentiate somehow early burst end.");
+        EndBurst();
+    }
+
     #endregion
 
     #region Jumping
@@ -188,7 +236,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         //If player doesn't want to jump or didn't jump inside buffer time return.
         if (!_jumpToConsume && !HasBufferedJump) return;
 
-        if (_isDashing || _isTeleporting) return;
+        if (_isBursting || _isTeleporting) return;
 
         //If player is grounded or still has coyote time use first jump.
         if (_grounded || CanUseCoyote) ExecuteJump();
@@ -218,80 +266,119 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     #region Dash
 
-    private float _dashEndTime;
-    private bool _isDashing;
-    private bool _canDash = true;
-    private bool _dashToConsume;
-    private Vector2 _dashDirection;
-    private bool _dashBuffered;
-    private float _timeDashWasPressed;
+    // private float _dashEndTime;
+    // private bool _isDashing;
+    // private bool _canDash = true;
+    // private bool _dashToConsume;
+    // private Vector2 _dashDirection;
+    // private bool _dashBuffered;
+    // private float _timeDashWasPressed;
+    //
+    // private bool HasBufferedDash => _dashBuffered && _time < _timeDashWasPressed + _stats.DashBuffer;
+    
+    private bool _isBursting;
+    private float _burstEndTime;
+    private float _burstCooldownEndTime;
+    private MovementDashData _currentBurst;
+    private Vector2 _burstDirection;
 
-    private bool HasBufferedDash => _dashBuffered && _time < _timeDashWasPressed + _stats.DashBuffer;
-
-    private void HandleDash()
+    private void TryStartBursting(MovementDashData data)
     {
-        if (_isDashing || !_canDash)
-        {
-            _dashBuffered = false;
-            return;
-        }
-
-        if (!HasBufferedDash || !CanDash()) return;
-
-        StartDash();
-        _dashBuffered = false;
-    }
-
-    private void StartDash()
-    {
-        _isDashing = true;
-        _canDash = false;
-
-        _dashDirection = GetDashDirection();
-        _frameVelocity = _dashDirection * _stats.DashSpeed;
-        _frameVelocity.y = 0f;
-
-        _dashEndTime = _time + _stats.DashDuration;
+        if (_isBursting) return;
+        if (_time < _burstCooldownEndTime) return;
+        
+        _currentBurst = data;
+        _isBursting = true;
 
         Dashed?.Invoke();
+
+        _burstDirection = Vector2.right * GetDirection;
+        _frameVelocity = _burstDirection * data.Speed;
+        _frameVelocity.y = 0;
+
+        _burstEndTime = _time + data.Duration;
+        _burstCooldownEndTime = _burstEndTime + data.Cooldown;
     }
 
-    private void ApplyDashMovement()
+    private void ApplyBurstMovement()
     {
-        _frameVelocity = _dashDirection * _stats.DashSpeed;
+        _frameVelocity = _burstDirection * _currentBurst.Speed;
 
-        if (_time >= _dashEndTime)
-            EndDash();
+        if (_time >= _burstEndTime)
+            EndBurst();
     }
 
-    private void EndDash()
+    private void EndBurst()
     {
-        _isDashing = false;
-
+        _isBursting = false;
         _frameVelocity.x = 0f;
-
-        StartCoroutine(DashCooldown());
+        _currentBurst = null;
     }
 
-    private IEnumerator DashCooldown()
-    {
-        yield return Helpers.GetWait(_stats.DashCooldown);
-        _canDash = true;
-    }
-
-    private Vector2 GetDashDirection()
-    {
-        float x = _frameInput.Move.x != 0
-            ? Mathf.Sign(_frameInput.Move.x)
-            : GetDirection;
-        return new Vector2(x, 0f);
-    }
-
-    private bool CanDash()
-    {
-        //If player is not dashing, can dash, and has dash ability, then he can dash
-        return !_isDashing && _canDash && _maskManager.HasDash();
-    }
+    // private void HandleDash()
+    // {
+    //     if (_isDashing || !_canDash)
+    //     {
+    //         _dashBuffered = false;
+    //         return;
+    //     }
+    //
+    //     if (!HasBufferedDash || !CanDash()) return;
+    //
+    //     StartDash();
+    //     _dashBuffered = false;
+    // }
+    //
+    // private void StartDash()
+    // {
+    //     _isDashing = true;
+    //     _canDash = false;
+    //
+    //     _dashDirection = GetDashDirection();
+    //     _frameVelocity = _dashDirection * _stats.DashSpeed;
+    //     _frameVelocity.y = 0f;
+    //
+    //     _dashEndTime = _time + _stats.DashDuration;
+    //
+    //     Dashed?.Invoke();
+    // }
+    //
+    // private void ApplyDashMovement()
+    // {
+    //     _frameVelocity = _dashDirection * _stats.DashSpeed;
+    //
+    //     if (_time >= _dashEndTime)
+    //         EndDash();
+    // }
+    //
+    // private void EndDash()
+    // {
+    //     _isDashing = false;
+    //
+    //     _frameVelocity.x = 0f;
+    //
+    //     StartCoroutine(DashCooldown());
+    // }
+    //
+    // private IEnumerator DashCooldown()
+    // {
+    //     yield return Helpers.GetWait(_stats.DashCooldown);
+    //     _canDash = true;
+    // }
+    //
+    // private Vector2 GetDashDirection()
+    // {
+    //     float x = _frameInput.Move.x != 0
+    //         ? Mathf.Sign(_frameInput.Move.x)
+    //         : GetDirection;
+    //     return new Vector2(x, 0f);
+    // }
+    //
+    // private bool CanDash()
+    // {
+    //     //If player is not dashing, can dash, and has dash ability, then he can dash
+    //     return !_isDashing && _canDash && _maskManager.HasDash();
+    // }
 
     #endregion
 
@@ -451,6 +538,15 @@ public class PlayerController : MonoBehaviour, IPlayerController
     }
 
     private void ApplyMovement() => _rb.velocity = _frameVelocity;
+
+    private void TryGrabMask()
+    {
+        bool grabbed = _maskManager.AddMaskToStack(_nearbyMask.Data);
+        if (!grabbed) return;
+        
+        Destroy(_nearbyMask.gameObject);
+        _nearbyMask = null;
+    }
 
 #if UNITY_EDITOR
     private void OnValidate()

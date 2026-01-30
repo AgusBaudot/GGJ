@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -7,10 +8,12 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public EnemyData Data { get; private set; }
+    public bool IsAlive => _currentHp > 0;
 
     private int _currentHp;
     private MaskManager _maskManager;
     private MaskSpawner _maskSpawner;
+    private bool _stunned;
 
     public void Init(MaskManager manager, MaskSpawner spawner, EnemyData data)
     {
@@ -25,6 +28,18 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
         //Switch on BehaviorType and code accordingly
+    }
+
+    public void ApplyStun(float duration)
+    {
+        _stunned = true;
+        StartCoroutine(TickStun(duration));
+    }
+    
+    private IEnumerator TickStun(float duration)
+    {
+        yield return Helpers.GetWait(duration);
+        _stunned = false;
     }
 
     public void TakeDamage(int amount)
@@ -42,7 +57,7 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
-        _maskSpawner.SpawnPickupMask(Data.DroppedMask, _maskManager, transform.position);
+        _maskSpawner.SpawnPickupMask(Data.DroppedMask, transform.position);
         Destroy(gameObject);
     }
 }

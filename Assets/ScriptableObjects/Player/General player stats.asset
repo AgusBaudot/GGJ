@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d06c371d62ef0d4408499a7d160c31d4, type: 3}
-  m_Name: True form player stats
+  m_Name: General player stats
   m_EditorClassIdentifier: 
   PlayerLayer:
     serializedVersion: 2
@@ -33,6 +33,7 @@ MonoBehaviour:
   JumpEndEarlyGravityModifier: 3
   CoyoteTime: 0.15
   JumpBuffer: 0.2
+  DashData: {fileID: 11400000, guid: 6cee3cee448df374f8ed725b31a93c6c, type: 2}
   DashSpeed: 28
   DashDuration: 0.15
   DashCooldown: 0.8
@@ -41,4 +42,13 @@ MonoBehaviour:
   TeleportDuration: 0.4
   TeleportCooldown: 3
   TeleportBuffer: 0.2
+  TackleData: {fileID: 11400000, guid: c91f68361f7984c4e8972632f81179bd, type: 2}
   BaseDamage: 1
+  BasicAttackSpeed: 15
+  BasicAttackDuration: 2
+  BasicAttackCooldown: 1
+  BasicAttackStunDuration: 0.5
+  BasicAttackBuffer: 0.2
+  GrabAttackRange: 1
+  GrabAttackCooldown: 2
+  GrabAttackBuffer: 0.2

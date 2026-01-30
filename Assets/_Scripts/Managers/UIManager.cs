@@ -21,11 +21,13 @@ public class UIManager : MonoBehaviour
 
     private void MaskEquipped(MaskData data)
     {
+        //Should show every mask IN ORDER, not only last one.
         _text.text = data.name;
     }
 
     private void MaskBroken()
     {
+        //When mask breaks player isn't automatically maskless, script should request new current mask and set maskless state only if CurrentMask = null;
         _text.text = "Maskless";
     }
 
