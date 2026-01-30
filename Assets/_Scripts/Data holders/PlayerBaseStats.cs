@@ -115,9 +115,11 @@ public class PlayerBaseStats : ScriptableObject
     [Tooltip("Force magnitude for damage-triggered (weaker) throw")]
     public float DropForce = 10f;
     
+    [Tooltip("Direction for voluntary throw (e.g. (1, 1) for up-forward); normalized when applying")]
     public Vector2 ThrowDirection = Vector2.one;
-    
-    public Vector2 DropDirection = Vector2.one / 2;
+
+    [Tooltip("Direction for damage-triggered auto-throw")]
+    public Vector2 DropDirection = new Vector2(0.5f, 0.5f);
 
     public float GrabAttackCooldown = 2f;
     
