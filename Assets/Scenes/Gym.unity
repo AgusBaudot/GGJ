@@ -139,7 +139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &37057515
 Transform:
   m_ObjectHideFlags: 0
@@ -5296,7 +5296,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &449705418
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5312,11 +5312,11 @@ RectTransform:
   m_Father: {fileID: 1699136479}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 20, y: -20}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -20, y: -20}
   m_SizeDelta: {x: 200, y: 50}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 1, y: 1}
 --- !u!114 &449705419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5339,8 +5339,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3f241e84774f2f24d9e6953d634e25c0, type: 2}
+  m_sharedMaterial: {fileID: 1819236897294459840, guid: 3f241e84774f2f24d9e6953d634e25c0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5372,7 +5372,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -5527,6 +5527,7 @@ GameObject:
   m_Component:
   - component: {fileID: 506279187}
   - component: {fileID: 506279188}
+  - component: {fileID: 506279191}
   - component: {fileID: 506279189}
   - component: {fileID: 506279190}
   m_Layer: 6
@@ -5564,7 +5565,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5912e707e6bbe02409216ab40965411e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _devTools: {fileID: 1306581795}
   _stats: {fileID: 11400000, guid: 8686caffd5bcaa04ca8bd0eb8ca0e546, type: 2}
   _maskManager: {fileID: 183177044}
 --- !u!50 &506279189
@@ -5604,6 +5604,18 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0.7}
   m_Size: {x: 0.9, y: 1.4}
   m_Direction: 0
+--- !u!114 &506279191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 506279186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b990e8e794527b4b981cf2a524e5db3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -21336,7 +21348,7 @@ TrailRenderer:
         inWeight: 0.33333334
         outWeight: 0.2027972
       - serializedVersion: 3
-        time: 1
+        time: 0.19999027
         value: 0
         inSlope: -0.18601623
         outSlope: -0.18601623
@@ -22602,7 +22614,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0.30769157
+          value: 0.023908615
           inSlope: 2.660091
           outSlope: 2.660091
           tangentMode: 0
@@ -22612,8 +22624,8 @@ ParticleSystem:
         - serializedVersion: 3
           time: 1
           value: 0
-          inSlope: -0.30769157
-          outSlope: -0.30769157
+          inSlope: -0.023908615
+          outSlope: -0.023908615
           tangentMode: 34
           weightedMode: 0
           inWeight: 0.33333334
@@ -26504,13 +26516,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _anim: {fileID: 121799893}
   _sprite: {fileID: 121799894}
-  _maxIdleSpeed: 2
+  _maxIdleSpeed: 1
   _maxTilt: 5
   _tiltSpeed: 20
   _jumpParticles: {fileID: 928509485}
   _launchParticles: {fileID: 849313848}
   _moveParticles: {fileID: 1555244033}
   _landParticles: {fileID: 123624188}
+  _doubleJumpParticles: {fileID: 908488044}
+  _dashParticles: {fileID: 1963493439}
   _footsteps:
   - {fileID: 8300000, guid: 5d94063f45167b04ab62585e436da58c, type: 3}
   - {fileID: 8300000, guid: b5803c17557c59c40bf3a6d69cb46cb3, type: 3}
@@ -26694,9 +26708,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyPrefab: {fileID: 8840854283208173162, guid: 176d7b8810d1f3a4cbe9ed74cb22940c, type: 3}
-  _maskManager: {fileID: 0}
+  _maskManager: {fileID: 183177044}
   _maskSpawner: {fileID: 741229955}
-  _data: {fileID: 11400000, guid: 26236ed72b5da9a4694586296837c7ba, type: 2}
+  _data:
+  - {fileID: 11400000, guid: 486bef476d072234dab44c4b77776605, type: 2}
+  - {fileID: 11400000, guid: d8404660f21fd5849bae3cf071bce2c9, type: 2}
+  - {fileID: 11400000, guid: 26236ed72b5da9a4694586296837c7ba, type: 2}
+  - {fileID: 11400000, guid: addcf1aee13f83240bf73b135ac882b3, type: 2}
 --- !u!1 &1903188419
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 586f464e55458354eb383854a60b5719, type: 3}
-  m_Name: Normal enemy
+  m_Name: Movement enemy
   m_EditorClassIdentifier: 
   MaxHP: 5
   ContactDmg: 10
   MoveSpeed: 10
   Behavior: 0
-  DroppedMask: {fileID: 11400000, guid: eaa4766e3d7b0bd4a9acbd1a8dc43737, type: 2}
+  DroppedMask: {fileID: 11400000, guid: 3ab7b43492c5f4f4d8c0197374e2729a, type: 2}
   EnemySprite: {fileID: 2747690628134850419, guid: 16037dbd798344f57a526d53d48f5ead, type: 3}

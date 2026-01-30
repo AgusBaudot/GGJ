@@ -6,26 +6,45 @@ using UnityEngine;
 /// </summary>
 
 public class PlayerAttack : MonoBehaviour
-{
-    private Collider2D _attackCollider;
-    private PlayerController _playerController;
-    private WaitForSeconds _attackDuration = new(0.5f);
-    
-    public IEnumerator Attack()
+{    
+    public void TryAttack(AttackType type)
     {
-        _attackCollider ??= GetComponent<Collider2D>();
-        
-        _attackCollider.enabled = true;
-        yield return _attackDuration;
-        _attackCollider.enabled = false;
+        switch (type)
+        {
+            case AttackType.Basic:
+                DoBasic();
+                break;
+
+            case AttackType.Ranged:
+                DoRanged();
+                break;
+
+            case AttackType.Grab:
+                DoGrab();
+                break;
+        }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void DoBasic()
     {
-        if (!other.CompareTag("Enemy")) return;
+        Debug.LogWarning("Basic attack type not implemented yet.");
+    }
 
-        _playerController ??= GetComponentInParent<PlayerController>();
-        // _playerController.Attack(other.GetComponent<Enemy>());
-        Debug.LogWarning("Missing attack method in player that damages enemies.");
+    private void DoRanged()
+    {
+        Debug.LogWarning("Ranged attack type not implemented yet.");
+    }
+
+    private void DoGrab()
+    {
+        Debug.LogWarning("Grab attack type not implemented yet.");
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(100);
+        }
     }
 }

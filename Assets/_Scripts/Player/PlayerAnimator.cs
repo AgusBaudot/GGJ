@@ -21,6 +21,8 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField] private ParticleSystem _launchParticles;
     [SerializeField] private ParticleSystem _moveParticles;
     [SerializeField] private ParticleSystem _landParticles;
+    [SerializeField] private ParticleSystem _doubleJumpParticles;
+    [SerializeField] private ParticleSystem _dashParticles;
 
     [Header("Audio Clips")] [SerializeField]
     private AudioClip[] _footsteps;
@@ -39,6 +41,8 @@ public class PlayerAnimator : MonoBehaviour
     private void OnEnable()
     {
         _player.Jumped += OnJumped;
+        _player.Dashed += OnDashed;
+        _player.Teleported += OnTeleported;
         _player.GroundedChanged += OnGroundedChanged;
 
         _moveParticles.Play();
@@ -47,6 +51,8 @@ public class PlayerAnimator : MonoBehaviour
     private void OnDisable()
     {
         _player.Jumped -= OnJumped;
+        _player.Dashed -= OnDashed;
+        _player.Teleported -= OnTeleported;
         _player.GroundedChanged -= OnGroundedChanged;
 
         _moveParticles.Stop();
@@ -62,7 +68,7 @@ public class PlayerAnimator : MonoBehaviour
 
         HandleIdleSpeed();
 
-        HandleCharacterTilt();
+        HandleCharacterWalk();
     }
 
     private void HandleSpriteFlip()
@@ -78,11 +84,9 @@ public class PlayerAnimator : MonoBehaviour
             Vector3.one * inputStrength, 2 * Time.deltaTime);
     }
 
-    private void HandleCharacterTilt()
+    private void HandleCharacterWalk()
     {
-        var runningTilt = _grounded ? Quaternion.Euler(0, 0, _maxTilt * _player.FrameInput.x) : Quaternion.identity;
-        _anim.transform.up =
-            Vector3.RotateTowards(_anim.transform.up, runningTilt * Vector2.up, _tiltSpeed * Time.deltaTime, 0f);
+        _anim.SetBool(IsWalking, _player.FrameInput.x != 0);
     }
 
     private void OnJumped()
@@ -97,6 +101,25 @@ public class PlayerAnimator : MonoBehaviour
             SetColor(_launchParticles);
             _jumpParticles.Play();
         }
+        else
+        {
+            _doubleJumpParticles.Play();
+        }
+    }
+
+    private void OnDashed()
+    {
+        //if animator has dash animation, set it here.
+
+        //SetColor(_dashParticles);
+        _dashParticles.Play();
+    }
+
+    private void OnTeleported()
+    {
+        //if animator has teleport animation, set it here.
+
+        //Add other VFX here.
     }
 
     private void OnGroundedChanged(bool grounded, float impact)
@@ -140,4 +163,5 @@ public class PlayerAnimator : MonoBehaviour
     private static readonly int GroundedKey = Animator.StringToHash("Grounded");
     private static readonly int IdleSpeedKey = Animator.StringToHash("IdleSpeed");
     private static readonly int JumpKey = Animator.StringToHash("Jump");
+    private static readonly int IsWalking = Animator.StringToHash("Walking");
 }

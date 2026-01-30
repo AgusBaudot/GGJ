@@ -16,8 +16,6 @@ MonoBehaviour:
   SpeedModifier: 1
   JumpForceModifier: 1
   DmgModifier: 2
-  ChangedAttack: 1
-  HasDash: 0
-  HasShield: 0
-  HasDoubleJump: 0
+  AttackType: 1
+  SecondaryType: 
   MaskSprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}

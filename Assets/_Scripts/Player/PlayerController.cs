@@ -5,19 +5,19 @@ using UnityEngine;
 /// <summary>
 /// In charge of everything the player does. Variables are in PlayerBaseStats.cs
 /// </summary>
+
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 public class PlayerController : MonoBehaviour, IPlayerController
 {
-    [Header("DELETE THIS")] [SerializeField]
-    private DevToolsAbilities _devTools;
-
-    [Header("NOT THIS")] [SerializeField] private PlayerBaseStats _stats;
+    [Header("DEPENDENCIES")]
+    [SerializeField] private PlayerBaseStats _stats;
     [SerializeField] private MaskManager _maskManager;
 
     public int GetDirection { get; private set; }
 
     private Rigidbody2D _rb;
     private CapsuleCollider2D _col;
+    private PlayerAttack _playerAttack;
     private FrameInput _frameInput;
     private Vector2 _frameVelocity;
     private bool _cachedQueryStartInColliders;
@@ -27,6 +27,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
     public Vector2 FrameInput => _frameInput.Move;
     public event Action<bool, float> GroundedChanged;
     public event Action Jumped;
+    public event Action Dashed;
+    public event Action Teleported;
 
     #endregion
 
@@ -36,6 +38,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     {
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<CapsuleCollider2D>();
+        _playerAttack = GetComponent<PlayerAttack>();
 
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
     }
@@ -82,14 +85,26 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         if (_frameInput.PrimaryDown)
         {
-            _dashBuffered = true;
-            _timeDashWasPressed = _time;
+            _playerAttack.TryAttack(_maskManager.GetCurrentAttack());
         }
 
         if (_frameInput.SecondaryDown)
         {
-            _teleportBuffered = true;
-            _timeTeleportPressed = _time;
+            switch (_maskManager.GetCurrentSecondary())
+            {
+                case SecondaryType.None:
+                    return;
+
+                case SecondaryType.Dash:
+                    _dashBuffered = true;
+                    _timeDashWasPressed = _time;
+                    break;
+
+                case SecondaryType.Teleport:
+                    _teleportBuffered = true;
+                    _timeTeleportPressed = _time;
+                    break;
+            }
         }
     }
 
@@ -179,7 +194,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         if (_grounded || CanUseCoyote) ExecuteJump();
 
         //If player has extra jump and its enabled, use second jump and consue it.
-        else if (_extraJump && _devTools._hasJump)
+        else if (_extraJump && _maskManager.HasDoubleJump())
         {
             ExecuteJump();
             _extraJump = false;
@@ -220,9 +235,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _dashBuffered = false;
             return;
         }
-        
+
         if (!HasBufferedDash || !CanDash()) return;
-        
+
         StartDash();
         _dashBuffered = false;
     }
@@ -237,6 +252,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
         _frameVelocity.y = 0f;
 
         _dashEndTime = _time + _stats.DashDuration;
+
+        Dashed?.Invoke();
     }
 
     private void ApplyDashMovement()
@@ -252,7 +269,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         _isDashing = false;
 
         _frameVelocity.x = 0f;
-        
+
         StartCoroutine(DashCooldown());
     }
 
@@ -273,7 +290,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private bool CanDash()
     {
         //If player is not dashing, can dash, and has dash ability, then he can dash
-        return !_isDashing && _canDash && _devTools._hasDash;
+        return !_isDashing && _canDash && _maskManager.HasDash();
     }
 
     #endregion
@@ -282,8 +299,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private bool _teleportBuffered;
     private bool _canTeleport = true;
-	private bool _isTeleporting;
-	private Vector2 _teleportTarget;
+    private bool _isTeleporting;
+    private Vector2 _teleportTarget;
     private float _timeTeleportPressed;
     private SpriteRenderer _renderer;
 
@@ -293,7 +310,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private void HandleTeleport()
     {
         if (_isTeleporting) return;
-        if (!HasBufferedTeleport || !_canTeleport || !_devTools._hasTeleport) return;
+        if (!HasBufferedTeleport || !_canTeleport || !_maskManager.HasTeleport()) return;
 
         _teleportBuffered = false;
         _canTeleport = false;
@@ -304,7 +321,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         bool cached = Physics2D.queriesStartInColliders;
         Physics2D.queriesStartInColliders = true;
-        
+
         //Check if space is free
         RaycastHit2D hit = Physics2D.CapsuleCast(
             origin,
@@ -321,43 +338,43 @@ public class PlayerController : MonoBehaviour, IPlayerController
             : origin + dir * distance;
 
         _teleportTarget.y -= _col.bounds.center.y - _rb.position.y;
-        //_teleportTarget.y -= _col.offset.y;
-        
+
         if (!_renderer)
             _renderer = GetComponentInChildren<SpriteRenderer>();
 
         StartCoroutine(TeleportRoutine());
     }
-    
+
     private IEnumerator TeleportRoutine()
     {
         _isTeleporting = true;
-    
+        Teleported?.Invoke();
+
         // 1. Kill both visuals and physics immediately
         _renderer.enabled = false;
         _frameVelocity = Vector2.zero;
         _rb.velocity = Vector2.zero;
-        
+
         var trail = GetComponentInChildren<TrailRenderer>();
         if (trail) trail.emitting = false;
 
         yield return Helpers.GetWait(_stats.TeleportDuration);
-    
+
         // 2. Move the Rigidbody
         _rb.position = _teleportTarget;
         _rb.velocity = Vector2.zero;
-        
+
         // 3. Force the Transform to match the Rigidbody position now
         transform.position = _teleportTarget;
 
         // 4. Force physics to catch up immediately
         Physics2D.SyncTransforms();
-        
+
         // 5. Wait two frames.
         // Frame 1: Physics updates and Camera recognizes new position. Frame 2: Camera snaps to new position and renders.
         yield return null;
         yield return null;
-        
+
         _renderer.enabled = true;
         _isTeleporting = false;
 
@@ -415,7 +432,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     }
 
     #endregion
-    
+
     private Vector2 GetSnappedTeleportPosition(RaycastHit2D hit)
     {
         Vector2 offset = Vector2.zero;
@@ -459,20 +476,10 @@ public interface IPlayerController
     public event Action<bool, float> GroundedChanged;
 
     public event Action Jumped;
+
+    public event Action Dashed;
+
+    public event Action Teleported;
+
     public Vector2 FrameInput { get; }
 }
-//Test teleport (both grounded and disappear).
-//Dash & tp override jump.
-//When final position of tp collides with obstacle, check where it "should" be (if collision happens in bottom-half, spawn player on top of platform. Left-half, move it to the right.
-
-/*
-Platformer-ish:
-Dash Speed:     25–30
-Dash Duration:  0.15–0.20
-Dash Cooldown:  0.6–1.0
-
-Brawler-ish:
-Dash Speed:     18–22
-Dash Duration:  0.25–0.35
-Dash Cooldown:  0.8–1.2
- */

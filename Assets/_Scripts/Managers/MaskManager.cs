@@ -56,6 +56,44 @@ public class MaskManager : MonoBehaviour
 
     public bool IsMaskless() => CurrentMask == null;
 
+    #region Attack and secondary type getters
+    //What happens when player wants to attack and/or presses secondary button while maskless?
+    public AttackType GetCurrentAttack()
+    {
+        return CurrentMask != null
+            ? CurrentMask.Data.AttackType
+            : AttackType.Basic;
+    }
+
+    public SecondaryType GetCurrentSecondary()
+    {
+        return CurrentMask != null
+            ? CurrentMask.Data.SecondaryType
+            : SecondaryType.None;
+    }
+
+    public bool HasDoubleJump()
+    {
+        return CurrentMask != null
+            ? CurrentMask.Data.DoubleJump
+            : false;
+    }
+
+    public bool HasDash()
+    {
+        return CurrentMask != null
+            ? GetCurrentSecondary() == SecondaryType.Dash
+            : false;
+    }
+
+    public bool HasTeleport()
+    {
+        return CurrentMask != null
+            ? GetCurrentSecondary() == SecondaryType.Teleport
+            : false;
+    }
+    #endregion
+
     public void ApplyDamage(int amount)
     {
         if (!IsMaskless())

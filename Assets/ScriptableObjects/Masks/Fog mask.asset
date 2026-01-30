@@ -16,8 +16,7 @@ MonoBehaviour:
   SpeedModifier: 1
   JumpForceModifier: 1.2
   DmgModifier: 1
-  ChangedAttack: 1
-  HasDash: 0
-  HasDoubleJump: 0
-  HasTeleport: 1
+  AttackType: 1
+  SecondaryType: 2
+  DoubleJump: 0
   MaskSprite: {fileID: 0}
