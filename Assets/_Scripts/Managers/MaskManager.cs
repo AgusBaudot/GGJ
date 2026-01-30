@@ -34,7 +34,7 @@ public class MaskManager : MonoBehaviour
         CurrentMask.OnBreak += BreakCurrentMask;
 
         OnMaskEquipped?.Invoke(maskData);
-
+        
         return true;
     }
 
@@ -93,6 +93,15 @@ public class MaskManager : MonoBehaviour
             : false;
     }
     #endregion
+
+    public RangedAttackData GetCurrentRangedAttack()
+    {
+        if (IsMaskless()) return null;
+
+        if (CurrentMask.Data.AttackType != AttackType.Ranged) return null;
+        
+        return CurrentMask.Data.RangedProjectile;
+    }
 
     public void ApplyDamage(int amount)
     {

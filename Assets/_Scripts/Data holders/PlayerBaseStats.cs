@@ -4,7 +4,7 @@ using UnityEngine;
 /// Base stats for true form.
 /// </summary>
 
-[CreateAssetMenu]
+[CreateAssetMenu(menuName = "SOs/Player stats", fileName = "New player stats")]
 public class PlayerBaseStats : ScriptableObject
 {
     [Header("LAYERS")]
@@ -63,6 +63,8 @@ public class PlayerBaseStats : ScriptableObject
     public float JumpBuffer = .2f;
 
     [Header("DASHING")]
+    public MovementDashData DashData;
+    
     [Tooltip("The velocity multiplier multiplied when player is dashing")]
     public float DashSpeed = 2f;
 
@@ -88,6 +90,26 @@ public class PlayerBaseStats : ScriptableObject
     [Tooltip("The amount of time we buffer a teleport. This allows teleport input before actually having a teleport available")]
     public float  TeleportBuffer = .2f;
     
-    [Header("DAMAGE")] [Tooltip("The amount of damage the player inflicts in its true form.")]
+    [Header("BASIC ATTACK")]
+    public MovementDashData TackleData;
+    
+    [Tooltip("The amount of damage the player inflicts in its true form.")]
     public float BaseDamage = 5;
+
+    public float BasicAttackSpeed = 15f;
+    
+    public float BasicAttackDuration = 2f;
+
+    public float BasicAttackCooldown = 1f;
+    
+    public float BasicAttackStunDuration = 0.5f;
+
+    public float BasicAttackBuffer = 0.2f;
+
+    [Header("GRAB ATTACK")] //Damage dealt by this attack is located in its mask.
+    public float GrabAttackRange = 1f;
+
+    public float GrabAttackCooldown = 2f;
+    
+    public float GrabAttackBuffer = 0.2f;
 }

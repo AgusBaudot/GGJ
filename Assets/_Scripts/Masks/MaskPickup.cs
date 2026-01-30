@@ -6,20 +6,15 @@ using UnityEngine;
 
 public class MaskPickup : MonoBehaviour
 {
-    private MaskManager _maskManager;
-    private MaskData _data;
+    public MaskData Data { get; private set; }
 
-    public void Init(MaskManager manager, MaskData data)
+    private int _lifeTime = 3;
+
+    public void Init(MaskData data)
     {
-        _maskManager = manager;
-        _data = data;
-        
+        Data = data;
         transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = data.MaskSprite;
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (!other.CompareTag("Player")) return;
-        if(_maskManager.AddMaskToStack(_data)) Destroy(gameObject);
+        
+        Destroy(gameObject, _lifeTime);
     }
 }
