@@ -32,6 +32,10 @@ public class MaskData : ScriptableObject
     
     [Header("VISUALS")]
     public Sprite MaskSprite;
+
+    [Header("ANIMATION")]
+    [Tooltip("ID for Animator's MaskEquipped int parameter. 0 = maskless/default. Each mask type gets a unique ID.")]
+    public int MaskAnimationID = 1;
 }
 
 public enum AttackType

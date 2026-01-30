@@ -57,10 +57,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
 
-        // Subscribe to component events
+        // Subscribe to component events (fire only when abilities actually execute)
         _jump.Jumped += OnJumped;
         _burst.Dashed += OnDashed;
         _teleport.Teleported += OnTeleported;
+        _playerAttack.AttackExecuted += type => Attacked?.Invoke(type);
     }
 
     private void Update()
@@ -81,18 +82,20 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // Jump input
         _jump.ProcessJumpInput(input.JumpDown, input.JumpHeld, _movement.GetVelocity());
 
-        // Primary attack
+        // Primary attack - fire Attacked only when ability actually executes
         if (input.PrimaryDown)
         {
             var attack = _maskManager.GetCurrentAttack();
-            Attacked?.Invoke(attack);
 
-            // Delegate attack to PlayerAttack.cs
+            // Delegate attack to PlayerAttack.cs (Ranged/Grab fire AttackExecuted internally)
             _playerAttack.TryAttack(attack);
 
-            // Make movement-based attack if applicable
+            // Basic attack = tackle burst - fire Attacked only when burst actually starts
             if (attack == AttackType.Basic && !_burst.IsBursting && !_teleport.IsTeleporting)
-                _burst.TryStartBurst(_stats.TackleData, GetDirection);
+            {
+                if (_burst.TryStartBurst(_stats.TackleData, GetDirection))
+                    Attacked?.Invoke(AttackType.Basic);
+            }
         }
 
         // Secondary ability

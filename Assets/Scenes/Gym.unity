@@ -2241,5 +2241,9 @@ PrefabInstance:
       propertyPath: m_Size.y
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 7961592145860871592, guid: 2cc362ca974b3a8428537698940a03cc, type: 3}
+      propertyPath: _maskManager
+      value: 
+      objectReference: {fileID: 183177044}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2cc362ca974b3a8428537698940a03cc, type: 3}

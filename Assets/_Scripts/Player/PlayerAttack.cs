@@ -1,11 +1,16 @@
+using System;
 using UnityEngine;
 
 /// <summary>
 /// Handles player attack behaviors. PlayerController delegates attack calls here.
 /// Basic and Grab attack stats are in PlayerBaseStats.
+/// Fires AttackExecuted only when the attack actually executes (passes cooldown, etc.).
 /// </summary>
+
 public class PlayerAttack : MonoBehaviour
 {
+    public event Action<AttackType> AttackExecuted;
+
     [SerializeField] private MaskManager _maskManager;
     [SerializeField] private PlayerProjectile _projectilePrefab;
     [SerializeField] private Transform _projectileSpawn;
@@ -38,10 +43,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void DoBasic()
     {
-        //Dash-like attack.
-        //Player launches forward for x duration with x speed.
-        //Upon hitting an enemy, it will be stunned for x time.
-        //When dash finishes (regardless of having hit an enemy), set horizontal velocity to 0.
+        //Handled in PlayerBurst.cs
     }
 
 
@@ -68,10 +70,13 @@ public class PlayerAttack : MonoBehaviour
         var projectile = Instantiate(_projectilePrefab, _projectileSpawn.position, Quaternion.identity);
         
         projectile.Init(data, Vector2.right * _input.FacingDirection);
+
+        AttackExecuted?.Invoke(AttackType.Ranged);
     }
 
     private void DoGrab()
     {
+        // When implemented, fire AttackExecuted?.Invoke(AttackType.Grab) here after successful grab
         Debug.LogWarning("Grab attack type not implemented yet.");
     }
 

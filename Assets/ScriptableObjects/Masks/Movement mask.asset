@@ -17,6 +17,8 @@ MonoBehaviour:
   JumpForceModifier: 0.8
   DmgModifier: 1
   AttackType: 0
+  RangedProjectile: {fileID: 0}
   SecondaryType: 1
   DoubleJump: 1
   MaskSprite: {fileID: 0}
+  MaskAnimationID: 3

@@ -1,0 +1,13 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FogProjectileOverrideController
+  m_Controller: {fileID: 9100000, guid: 0394040a20d4cd641ba4ecd5ae115699, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: d465e301c87d60741ba911359da0358b, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: fef2ce23d23e6ed45b7ba4321e2b017e, type: 2}

@@ -109,6 +109,16 @@ public class PlayerBaseStats : ScriptableObject
     [Header("GRAB ATTACK")] //Damage dealt by this attack is located in its mask.
     public float GrabAttackRange = 1f;
 
+    [Tooltip("Force magnitude for voluntary throw")]
+    public float ThrowForce = 20f;
+
+    [Tooltip("Force magnitude for damage-triggered (weaker) throw")]
+    public float DropForce = 10f;
+    
+    public Vector2 ThrowDirection = Vector2.one;
+    
+    public Vector2 DropDirection = Vector2.one / 2;
+
     public float GrabAttackCooldown = 2f;
     
     public float GrabAttackBuffer = 0.2f;
