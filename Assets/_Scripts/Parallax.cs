@@ -6,12 +6,21 @@ public class Parallax : MonoBehaviour
     [Header("Layers & images")]
     [SerializeField] private int[] _layers;
 
-    private Camera _cam;
-    private Vector3 _lastCameraPos;
+    Material mat;
+    float distance;
 
-    private void Start()
+    [Range(0f, 0.5f)]
+    public float speed = 0.2f;
+
+
+    void Start()
     {
-        _cam = Helpers.Camera;
-        _lastCameraPos = _cam.transform.position;
+        mat = GetComponent<Renderer>().material;
+    }
+
+    void Update()
+    {
+        distance += Time.deltaTime * speed;
+        mat.SetTextureOffset("_MainTex", Vector2.right * distance);
     }
 }
