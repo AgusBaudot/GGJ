@@ -15,4 +15,5 @@ public class RangedAttackData : ScriptableObject
     
     [Header("VISUALS")]
     public Sprite ProjectileSprite;
+    public AnimatorOverrideController AnimatorOverride;
 }

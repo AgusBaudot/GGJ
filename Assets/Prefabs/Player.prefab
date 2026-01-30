@@ -19725,7 +19725,7 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 1
+  m_DrawMode: 0
   m_Size: {x: 1, y: 1.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
@@ -29581,9 +29581,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _anim: {fileID: 7961592145372915264}
   _sprite: {fileID: 7961592145372915267}
-  _maxIdleSpeed: 1
-  _maxTilt: 5
-  _tiltSpeed: 20
   _jumpParticles: {fileID: 7961592144566373560}
   _launchParticles: {fileID: 7961592144486146733}
   _moveParticles: {fileID: 7961592146263246484}

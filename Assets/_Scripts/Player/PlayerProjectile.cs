@@ -13,6 +13,10 @@ public class PlayerProjectile : MonoBehaviour
         _spawnTime = Time.time;
 
         GetComponentInChildren<SpriteRenderer>().sprite = data.ProjectileSprite;
+        
+        var anim = GetComponentInChildren<Animator>();
+        if (anim && data.AnimatorOverride)
+            anim.runtimeAnimatorController = data.AnimatorOverride;
     }
 
     private void Update()

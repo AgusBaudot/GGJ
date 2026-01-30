@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     public event Action Jumped;
     public event Action Dashed;
     public event Action Teleported;
+    public event Action<AttackType> Attacked;
 
     #endregion
 
@@ -40,6 +41,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<CapsuleCollider2D>();
         _playerAttack = GetComponent<PlayerAttack>();
+
+        GetDirection = 1;
 
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
     }
@@ -93,6 +96,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             var attack = _maskManager.GetCurrentAttack();
 
+            Attacked?.Invoke(attack);
+
             //Delegate attack to PlayerAttack.cs
             _playerAttack.TryAttack(attack);
             
@@ -109,8 +114,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
                     return;
 
                 case SecondaryType.Dash:
-                    // _dashBuffered = true;
-                    // _timeDashWasPressed = _time;
                     TryStartBursting(_stats.DashData);
                     break;
 
@@ -127,17 +130,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         CheckCollisions();
 
         HandleJump();
-        // HandleDash();
         HandleTeleport();
-        // if (_isDashing)
-        // {
-        //     ApplyDashMovement();
-        // }
-        // else if (!_isDashing && !_isTeleporting)
-        // {
-        //     HandleDirection();
-        //     HandleGravity();
-        // }
         if (_isBursting)
         {
             ApplyBurstMovement();
@@ -290,7 +283,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
         _currentBurst = data;
         _isBursting = true;
 
-        Dashed?.Invoke();
+        if (!data.DealsDamage)
+            Dashed?.Invoke();
 
         _burstDirection = Vector2.right * GetDirection;
         _frameVelocity = _burstDirection * data.Speed;
@@ -576,6 +570,8 @@ public interface IPlayerController
     public event Action Dashed;
 
     public event Action Teleported;
+
+    public event Action<AttackType> Attacked;
 
     public Vector2 FrameInput { get; }
 }
