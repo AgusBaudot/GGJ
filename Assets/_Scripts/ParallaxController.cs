@@ -19,6 +19,7 @@ public class ParallaxController : MonoBehaviour
     public float parallaxSpeed;
 
     // Start is called before the first frame update
+    // https://www.youtube.com/watch?v=ZYZfKbLxoHI
     void Start()
     {
         cam = Camera.main.transform;
