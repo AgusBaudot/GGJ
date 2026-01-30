@@ -1,10 +1,9 @@
 using UnityEngine;
 
 /// <summary>
-/// VERY primitive player attack. PlayerController will call the corresponding attack. Logic is not handled here, only behavior.
-/// Basic and Grab attack stats are in PlayerBaseStats
+/// Handles player attack behaviors. PlayerController delegates attack calls here.
+/// Basic and Grab attack stats are in PlayerBaseStats.
 /// </summary>
-
 public class PlayerAttack : MonoBehaviour
 {
     [SerializeField] private MaskManager _maskManager;
@@ -12,11 +11,11 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private Transform _projectileSpawn;
     
     private float _lastShotTime;
-    private PlayerController _controller;
+    private PlayerInput _input;
 
     private void Awake()
     {
-        _controller = GetComponent<PlayerController>();
+        _input = GetComponent<PlayerInput>();
     }
 
     public void TryAttack(AttackType type)
@@ -68,7 +67,7 @@ public class PlayerAttack : MonoBehaviour
 
         var projectile = Instantiate(_projectilePrefab, _projectileSpawn.position, Quaternion.identity);
         
-        projectile.Init(data, Vector2.right * _controller.GetDirection);
+        projectile.Init(data, Vector2.right * _input.FacingDirection);
     }
 
     private void DoGrab()

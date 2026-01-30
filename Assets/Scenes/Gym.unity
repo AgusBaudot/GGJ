@@ -2173,6 +2173,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1903188420}
     m_Modifications:
+    - target: {fileID: 6007264869591380357, guid: 2cc362ca974b3a8428537698940a03cc, type: 3}
+      propertyPath: _maskManager
+      value: 
+      objectReference: {fileID: 183177044}
     - target: {fileID: 7961592145214805889, guid: 2cc362ca974b3a8428537698940a03cc, type: 3}
       propertyPath: _maskManager
       value: 
