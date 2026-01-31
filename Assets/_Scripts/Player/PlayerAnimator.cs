@@ -1,4 +1,5 @@
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// VERY primitive animator example.
@@ -10,6 +11,7 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField] private Animator _anim;
     [SerializeField] private SpriteRenderer _sprite;
     [SerializeField] private MaskManager _maskManager;
+    [SerializeField] private Transform _projectileSpawnpoint;
 
     [Header("Particles")] 
     [SerializeField] private ParticleSystem _jumpParticles;
@@ -83,7 +85,13 @@ public class PlayerAnimator : MonoBehaviour
 
     private void HandleSpriteFlip()
     {
-        if (_player.FrameInput.x != 0) _sprite.flipX = _player.FrameInput.x < 0;
+        if (_player.FrameInput.x == 0) return;
+        
+        _sprite.flipX = _player.FrameInput.x < 0;
+        
+        _projectileSpawnpoint.localPosition = _sprite.flipX
+            ? new Vector3(-Mathf.Abs(_projectileSpawnpoint.localPosition.x), _projectileSpawnpoint.localPosition.y)
+            : new Vector3(Mathf.Abs(_projectileSpawnpoint.localPosition.x), _projectileSpawnpoint.localPosition.y);
     }
 
     private void HandleCharacterWalk()

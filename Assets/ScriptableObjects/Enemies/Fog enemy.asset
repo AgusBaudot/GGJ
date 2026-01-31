@@ -17,6 +17,28 @@ MonoBehaviour:
   MoveSpeed: 10
   Behavior: 3
   DroppedMask: {fileID: 11400000, guid: af1fba4a556d4a043beeb19f59965456, type: 2}
-  DetectionRange: 5
-  AttackDistance: 5
+  DetectionDistance: 7
+  AttackDistance: 7
+  FleeDistance: 3
+  JumpForce: 10
+  ApproachHorizontalSpeed: 5
+  ApproachJumpForce: 10
+  DashSpeed: 20
+  DashDuration: 0.3
+  AttackCooldown: 2
+  BackwardsSpeed: 3
+  ProjectilePrefab: {fileID: 4410416591188161858, guid: af2921d238db64d46bcae5dd22c388eb, type: 3}
+  RangedAttackData: {fileID: 11400000, guid: 4b51d34c3c1fee345825ac110e94769e, type: 2}
+  GrabWindupTime: 1
+  GrabOffset: {x: 1, y: 0.5}
+  GrabSize: {x: 1, y: 2}
+  PlayerHoldDuration: 0.5
+  PlayerHoldOffset: {x: 0, y: 1.5}
+  ThrowDirection: {x: 1, y: 1}
+  ThrowForce: 15
+  GrabMissCooldown: 1
+  TeleportDistance: 5
+  TeleportCooldown: 3
+  TeleportDissolveDuration: 0
+  TeleportReappearDuration: 0
   EnemySprite: {fileID: 2747690628134850419, guid: 16037dbd798344f57a526d53d48f5ead, type: 3}

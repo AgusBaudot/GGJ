@@ -1,53 +1,89 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
-/// Decides behavior during runtime. Drops MaskPickup upon death.
+/// Orchestrates enemy systems. Delegates to specialized behavior components.
+/// Variables are in EnemyData.
 /// </summary>
 
+[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
 public class Enemy : MonoBehaviour
 {
     public EnemyData Data { get; private set; }
+    public MaskManager MaskManager { get; private set; }
     public bool IsAlive => _currentHp > 0;
+    public bool IsStunned => _stunned;
+    public Transform Player { get; private set; }
+    public Rigidbody2D Rb { get; private set; }
+    public BoxCollider2D Col { get; private set; }
 
     private int _currentHp;
-    private MaskManager _maskManager;
     private MaskSpawner _maskSpawner;
     private bool _stunned;
+
+    // Behavior component
+    private IEnemyBehavior _behavior;
 
     public void Init(MaskManager manager, MaskSpawner spawner, EnemyData data)
     {
         Data = data;
-        _maskManager = manager;
+        MaskManager = manager;
         _maskSpawner = spawner;
         
         _currentHp = Data.MaxHP;
         transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Data.EnemySprite;
+
+        // Get components
+        Rb = GetComponent<Rigidbody2D>();
+        Col = GetComponent<BoxCollider2D>();
+
+        // Find player
+        Player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        if (Player == null)
+            Debug.LogError("Player not found! Make sure Player has 'Player' tag.");
+
+        // Initialize behavior based on type
+        InitializeBehavior();
     }
 
-    private void Update()
+    private void InitializeBehavior()
     {
         switch (Data.Behavior)
         {
             case BehaviorType.Hunter:
-                //Fire mask.
+                _behavior = gameObject.AddComponent<HunterBehavior>();
                 break;
             case BehaviorType.Acrobat:
-                //Movement mask.
+                _behavior = gameObject.AddComponent<AcrobatBehavior>();
                 break;
             case BehaviorType.Guardian:
-                //Tank mask.
+                _behavior = gameObject.AddComponent<GuardianBehavior>();
                 break;
             case BehaviorType.Sneaky:
-                //Fog mask.
+                _behavior = gameObject.AddComponent<SneakyBehavior>();
                 break;
         }
+
+        _behavior?.Initialize(this);
+    }
+
+    private void Update()
+    {
+        if (!IsAlive || _stunned) return;
+        _behavior?.UpdateBehavior();
+    }
+
+    private void FixedUpdate()
+    {
+        if (!IsAlive || _stunned) return;
+        _behavior?.FixedUpdateBehavior();
     }
 
     public void ApplyStun(float duration)
     {
+        if (_stunned) return;
         _stunned = true;
+        _behavior?.OnStunned();
         StartCoroutine(TickStun(duration));
     }
     
@@ -55,8 +91,9 @@ public class Enemy : MonoBehaviour
     {
         yield return Helpers.GetWait(duration);
         _stunned = false;
+        _behavior?.OnStunEnded();
     }
-
+    
     public void TakeDamage(int amount)
     {
         _currentHp -= amount;
@@ -64,10 +101,10 @@ public class Enemy : MonoBehaviour
             Die();
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    public void TryAttack()
     {
-        if (!other.gameObject.CompareTag("Player")) return;
-        _maskManager.ApplyDamage(Data.ContactDmg);
+        if (_stunned) return;
+        MaskManager.ApplyDamage(Data.ContactDmg);
     }
 
     private void Die()
@@ -78,9 +115,13 @@ public class Enemy : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        if (Data == null) return;
+        
         Gizmos.color = Color.black;
-        Gizmos.DrawWireSphere(transform.position, Data.DetectionRange);
+        Gizmos.DrawWireSphere(transform.position, Data.DetectionDistance);
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, 0);
+        Gizmos.DrawWireSphere(transform.position, Data.AttackDistance);
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(transform.position, Data.FleeDistance);
     }
 }
