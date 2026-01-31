@@ -8,6 +8,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject optionsMenu;
     [SerializeField] private GameObject audioVideoMenu;
     [SerializeField] private GameObject confirmExitMenu;
+    [SerializeField] private GameObject controlsMenu;
+
 
     private GameObject currentMenu;
     private Stack<GameObject> menuStack = new Stack<GameObject>();
@@ -64,4 +66,6 @@ public class MenuManager : MonoBehaviour
     public void OpenOptions() => OpenMenu(optionsMenu);
     public void OpenAudioVideo() => OpenMenu(audioVideoMenu);
     public void OpenConfirmExit() => OpenMenu(confirmExitMenu);
+    public void OpenControls() => OpenMenu(controlsMenu);
+
 }
