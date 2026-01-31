@@ -707,7 +707,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 438481465}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d881e015bb5543418c13be267efbce0, type: 3}
+  m_Script: {fileID: 11500000, guid: 91e923bce0731a24cb69347fe04f85f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &588429195
@@ -1083,8 +1083,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 438481470}
-        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
-        m_MethodName: ExitToMainMenu
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: ExitConfirmation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1479,8 +1479,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 438481470}
-        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
-        m_MethodName: OpenOptionsScene
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: ToOptionsScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1613,8 +1613,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 438481470}
-        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
-        m_MethodName: Resume
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: ToGymScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1959,8 +1959,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 438481470}
-        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
-        m_MethodName: Restar
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: ToGymScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
