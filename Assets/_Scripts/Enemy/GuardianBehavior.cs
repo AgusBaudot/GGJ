@@ -284,61 +284,14 @@ public class GuardianBehavior : MonoBehaviour, IEnemyBehavior
         _isHoldingPlayer = false;
         _isGrabbing = false;
 
-        // Keep controller disabled until landing so throw arc isn't overwritten by movement
-        StartCoroutine(MonitorPlayerLanding());
+        // Use collision-based landing: handler applies damage and re-enables control on OnCollisionEnter2D
+        var existing = _player.GetComponent<ThrownByGuardianHandler>();
+        if (existing != null) Destroy(existing);
+        var handler = _player.gameObject.AddComponent<ThrownByGuardianHandler>();
+        handler.Init(_data.ContactDmg, _col);
 
         // Cooldown before next grab
         StartCoroutine(GrabCooldown());
-    }
-
-    private IEnumerator MonitorPlayerLanding()
-    {
-        if (_playerInput == null || _playerCollider == null) yield break;
-
-        // Wait a frame for physics to update
-        yield return new WaitForFixedUpdate();
-
-        // Wait until player collides with something
-        ContactFilter2D filter = new ContactFilter2D();
-        filter.useTriggers = false;
-        filter.SetLayerMask(~0); // Check all layers
-
-        Collider2D[] results = new Collider2D[10];
-        float maxWaitTime = 3f; // Safety timeout
-        float elapsedTime = 0f;
-
-        while (elapsedTime < maxWaitTime)
-        {
-            int count = _playerCollider.OverlapCollider(filter, results);
-
-            // Check if player is touching anything (excluding the guardian itself)
-            for (int i = 0; i < count; i++)
-            {
-                if (results[i] != null && results[i] != _col)
-                {
-                    // Player landed - deal damage and re-enable controller + input
-                    if (_maskManager != null)
-                        _maskManager.ApplyDamage(_data.ContactDmg);
-
-                    if (_playerInput != null)
-                    {
-                        _playerInput.enabled = true;
-                    }
-                    
-                    if (_playerController != null)
-                        _playerController.enabled = true;
-
-                    yield break;
-                }
-            }
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        // Safety: re-enable controller and input if timeout
-        if (_playerInput != null) _playerInput.enabled = true;
-        if (_playerController != null) _playerController.enabled = true;
     }
 
     private IEnumerator GrabCooldown()

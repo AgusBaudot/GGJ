@@ -10,7 +10,7 @@ public class EnemyData : ScriptableObject
     [Header("ENEMY STATS")]
     public int MaxHP = 5;
     public int ContactDmg = 10;
-    public int MoveSpeed = 2;
+    public int MoveSpeed = 10;
     public BehaviorType Behavior;
     public MaskData DroppedMask;
     
@@ -61,6 +61,16 @@ public class EnemyData : ScriptableObject
     public float ThrowForce = 15f;
     [Tooltip("Cooldown after missing a grab")]
     public float GrabMissCooldown = 1f;
+    
+    [Header("SNEAKY SPECIFIC")]
+    [Tooltip("Distance to teleport away from player")]
+    public float TeleportDistance = 5f;
+    [Tooltip("Cooldown between teleports")]
+    public float TeleportCooldown = 3f;
+    [Tooltip("Visual dissolve duration before teleport (optional)")]
+    public float TeleportDissolveDuration = 0f;
+    [Tooltip("Visual reappear duration after teleport (optional)")]
+    public float TeleportReappearDuration = 0f;
     
     [Header("VISUALS")]
     public Sprite EnemySprite;

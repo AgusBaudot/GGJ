@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [SerializeField] private PlayerBaseStats _stats;
     [SerializeField] private MaskManager _maskManager;
 
+    public MaskManager MaskManager => _maskManager;
+    public int GetDirection => _input.FacingDirection;
+
     // Components
     private PlayerInput _input;
     private PlayerMovement _movement;
@@ -31,8 +34,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private bool _isTeleportingSequence; //Locks input and physics during the animation.
     private float _frameLeftGrounded = float.MinValue;
     private MaskPickup _nearbyMask;
-
-    public int GetDirection => _input.FacingDirection;
 
     #region Interface
 
