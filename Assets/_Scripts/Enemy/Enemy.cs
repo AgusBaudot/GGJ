@@ -81,6 +81,6 @@ public class Enemy : MonoBehaviour
         Gizmos.color = Color.black;
         Gizmos.DrawWireSphere(transform.position, Data.DetectionRange);
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, Data.att);
+        Gizmos.DrawWireSphere(transform.position, 0);
     }
 }
