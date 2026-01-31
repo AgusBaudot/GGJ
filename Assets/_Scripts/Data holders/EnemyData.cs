@@ -43,8 +43,10 @@ public class EnemyData : ScriptableObject
     public GameObject ProjectilePrefab;
     [Tooltip("Data for the projectile stats")]
     public RangedAttackData RangedAttackData;
-    
+
     [Header("GUARDIAN SPECIFIC")]
+    [Tooltip("The amount of damage dealt by colliding with anything after being thrown")]
+    public int DamageUponCollision = 3;
     [Tooltip("Time to wait before executing grab (telegraph)")]
     public float GrabWindupTime = 1f;
     [Tooltip("Offset from enemy position for grab hitbox")]

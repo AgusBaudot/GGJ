@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 586f464e55458354eb383854a60b5719, type: 3}
   m_Name: Movement enemy
   m_EditorClassIdentifier: 
-  MaxHP: 5
-  ContactDmg: 10
+  MaxHP: 3
+  ContactDmg: 1
   MoveSpeed: 10
   Behavior: 1
   DroppedMask: {fileID: 11400000, guid: 3ab7b43492c5f4f4d8c0197374e2729a, type: 2}
-  DetectionDistance: 7
+  DetectionDistance: 8
   AttackDistance: 4
   FleeDistance: 0
   JumpForce: 6
@@ -34,6 +34,11 @@ MonoBehaviour:
   GrabSize: {x: 1, y: 2}
   PlayerHoldDuration: 0.5
   PlayerHoldOffset: {x: 0, y: 1.5}
+  ThrowDirection: {x: 1, y: 1}
   ThrowForce: 0
   GrabMissCooldown: 1
+  TeleportDistance: 5
+  TeleportCooldown: 3
+  TeleportDissolveDuration: 0
+  TeleportReappearDuration: 0
   EnemySprite: {fileID: 2747690628134850419, guid: 16037dbd798344f57a526d53d48f5ead, type: 3}

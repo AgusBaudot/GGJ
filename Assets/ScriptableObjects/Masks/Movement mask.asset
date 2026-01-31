@@ -20,5 +20,5 @@ MonoBehaviour:
   RangedProjectile: {fileID: 0}
   SecondaryType: 1
   DoubleJump: 1
-  MaskSprite: {fileID: 0}
+  MaskSprite: {fileID: 21300000, guid: 403785ad5b1ae3c4da6219f646243140, type: 3}
   MaskAnimationID: 3

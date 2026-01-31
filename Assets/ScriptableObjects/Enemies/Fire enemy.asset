@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Fire enemy
   m_EditorClassIdentifier: 
   MaxHP: 5
-  ContactDmg: 10
+  ContactDmg: 1
   MoveSpeed: 10
   Behavior: 0
   DroppedMask: {fileID: 11400000, guid: eaa4766e3d7b0bd4a9acbd1a8dc43737, type: 2}
-  DetectionDistance: 10
-  AttackDistance: 10
+  DetectionDistance: 9
+  AttackDistance: 9
   FleeDistance: 5
   JumpForce: 10
   ApproachHorizontalSpeed: 5
@@ -26,7 +26,7 @@ MonoBehaviour:
   DashSpeed: 20
   DashDuration: 0.3
   AttackCooldown: 2
-  BackwardsSpeed: 4
+  BackwardsSpeed: 6
   ProjectilePrefab: {fileID: 4410416591188161858, guid: af2921d238db64d46bcae5dd22c388eb, type: 3}
   RangedAttackData: {fileID: 11400000, guid: 3f3a47ec3390f8a49b115e044792d65a, type: 2}
   GrabWindupTime: 1

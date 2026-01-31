@@ -291,7 +291,7 @@ public class GuardianBehavior : MonoBehaviour, IEnemyBehavior
         var existing = _player.GetComponent<ThrownByGuardianHandler>();
         if (existing != null) Destroy(existing);
         var handler = _player.gameObject.AddComponent<ThrownByGuardianHandler>();
-        handler.Init(_data.ContactDmg, _col);
+        handler.Init(_data.DamageUponCollision, _col);
 
         // Cooldown before next grab
         StartCoroutine(GrabCooldown());

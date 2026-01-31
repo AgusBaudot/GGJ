@@ -163,6 +163,7 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
+        StatsManager.Instance?.AddKill();
         var enemyAnimator = GetComponentInChildren<EnemyAnimator>();
         if (enemyAnimator != null)
             StartCoroutine(DieRoutine(enemyAnimator));

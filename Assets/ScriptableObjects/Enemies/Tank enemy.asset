@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Tank enemy
   m_EditorClassIdentifier: 
   MaxHP: 5
-  ContactDmg: 10
+  ContactDmg: 1
   MoveSpeed: 2
   Behavior: 2
   DroppedMask: {fileID: 11400000, guid: de018b3fa482f8a47aef1fe0858b77ae, type: 2}
@@ -31,10 +31,14 @@ MonoBehaviour:
   RangedAttackData: {fileID: 0}
   GrabWindupTime: 1
   GrabOffset: {x: 1, y: 0.5}
-  GrabSize: {x: 1, y: 2}
+  GrabSize: {x: 1.3, y: 2}
   PlayerHoldDuration: 0.5
   PlayerHoldOffset: {x: 0, y: 2}
   ThrowDirection: {x: 2, y: -0.25}
   ThrowForce: 20
   GrabMissCooldown: 1
+  TeleportDistance: 5
+  TeleportCooldown: 3
+  TeleportDissolveDuration: 0
+  TeleportReappearDuration: 0
   EnemySprite: {fileID: 2747690628134850419, guid: 16037dbd798344f57a526d53d48f5ead, type: 3}

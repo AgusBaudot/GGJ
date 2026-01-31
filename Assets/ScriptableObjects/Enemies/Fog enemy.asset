@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 586f464e55458354eb383854a60b5719, type: 3}
   m_Name: Fog enemy
   m_EditorClassIdentifier: 
-  MaxHP: 5
-  ContactDmg: 10
+  MaxHP: 3
+  ContactDmg: 1
   MoveSpeed: 10
   Behavior: 3
   DroppedMask: {fileID: 11400000, guid: af1fba4a556d4a043beeb19f59965456, type: 2}
-  DetectionDistance: 7
-  AttackDistance: 7
+  DetectionDistance: 9
+  AttackDistance: 9
   FleeDistance: 3
   JumpForce: 10
   ApproachHorizontalSpeed: 5
@@ -37,7 +37,7 @@ MonoBehaviour:
   ThrowDirection: {x: 1, y: 1}
   ThrowForce: 15
   GrabMissCooldown: 1
-  TeleportDistance: 5
+  TeleportDistance: 8
   TeleportCooldown: 3
   TeleportDissolveDuration: 0
   TeleportReappearDuration: 0
