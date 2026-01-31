@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -17,8 +18,28 @@ public class Enemy : MonoBehaviour
     public Rigidbody2D Rb { get; private set; }
     public BoxCollider2D Col { get; private set; }
 
-    private int _currentHp;
+    /// <summary>
+    /// Fired when the enemy performs an attack (contact, ranged, grab, dash, etc.). Used by EnemyAnimator.
+    /// </summary>
+    public event Action OnAttackTriggered;
+
+    /// <summary>
+    /// Fired when a windup attack starts (e.g. Guardian grab telegraph). Used by EnemyAnimator for GrabWindup.
+    /// </summary>
+    public event Action OnAttackWindupStarted;
+
+    /// <summary>
+    /// Fired when a windup attack succeeds (e.g. Guardian grab hit). Used by EnemyAnimator for GrabSuccess.
+    /// </summary>
+    public event Action OnAttackSucceeded;
+
+    /// <summary>
+    /// Fired when a windup attack fails (e.g. Guardian grab miss). Used by EnemyAnimator for GrabFailed.
+    /// </summary>
+    public event Action OnAttackFailed;
+
     private MaskSpawner _maskSpawner;
+    private int _currentHp;
     private bool _stunned;
 
     // Behavior component
@@ -104,11 +125,55 @@ public class Enemy : MonoBehaviour
     public void TryAttack()
     {
         if (_stunned) return;
+        NotifyAttackTriggered();
         MaskManager.ApplyDamage(Data.ContactDmg);
+    }
+
+    /// <summary>
+    /// Call from behaviors when performing an attack (ranged, grab, dash, etc.) so the animator can play the attack animation.
+    /// </summary>
+    public void NotifyAttackTriggered()
+    {
+        OnAttackTriggered?.Invoke();
+    }
+
+    /// <summary>
+    /// Call from behaviors when starting a windup attack (e.g. Guardian grab telegraph). Animator can play windup → then success/failed.
+    /// </summary>
+    public void NotifyAttackWindupStarted()
+    {
+        OnAttackWindupStarted?.Invoke();
+    }
+
+    /// <summary>
+    /// Call from behaviors when a windup attack succeeds (e.g. Guardian grab hit).
+    /// </summary>
+    public void NotifyAttackSucceeded()
+    {
+        OnAttackSucceeded?.Invoke();
+    }
+
+    /// <summary>
+    /// Call from behaviors when a windup attack fails (e.g. Guardian grab miss).
+    /// </summary>
+    public void NotifyAttackFailed()
+    {
+        OnAttackFailed?.Invoke();
     }
 
     private void Die()
     {
+        var enemyAnimator = GetComponentInChildren<EnemyAnimator>();
+        if (enemyAnimator != null)
+            StartCoroutine(DieRoutine(enemyAnimator));
+        else
+            Destroy(gameObject);
+    }
+
+    private IEnumerator DieRoutine(EnemyAnimator enemyAnimator)
+    {
+        enemyAnimator.TriggerDeath();
+        yield return new WaitForSeconds(enemyAnimator.DeathAnimationDuration);
         _maskSpawner.SpawnPickupMask(Data.DroppedMask, transform.position);
         Destroy(gameObject);
     }
@@ -124,4 +189,5 @@ public class Enemy : MonoBehaviour
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(transform.position, Data.FleeDistance);
     }
+
 }

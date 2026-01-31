@@ -8,4 +8,5 @@ public struct FrameInput
     public bool PrimaryDown;
     public bool SecondaryDown;
     public bool GrabDown;
+    public bool BreakDown;
 }

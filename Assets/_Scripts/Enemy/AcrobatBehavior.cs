@@ -292,6 +292,7 @@ public class AcrobatBehavior : MonoBehaviour, IEnemyBehavior
         _isDashing = true;
         _dashDirection = direction;
         _dashEndTime = Time.time + _data.DashDuration;
+        _enemy.NotifyAttackTriggered();
 
         if (_enableDebugLogs)
             Debug.Log($"<color=red>[ACROBAT]</color> DASH STARTED!\n" +

@@ -67,7 +67,7 @@ public class PlayerTeleport : MonoBehaviour
 
         // 3. Reset Trail
         if (trail) trail.emitting = true;
-
+         
         // 4. Start internal cooldown
         StartCoroutine(CooldownRoutine());
     }

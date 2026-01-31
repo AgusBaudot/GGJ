@@ -85,6 +85,10 @@ public class PlayerController : MonoBehaviour, IPlayerController
             TryGrabMask();
         }
 
+        //Mask break
+        if (input.BreakDown)
+            _maskManager.BreakCurrentMask();
+
         // Jump input
         _jump.ProcessJumpInput(input.JumpDown, input.JumpHeld, _movement.GetVelocity());
 

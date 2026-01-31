@@ -179,6 +179,7 @@ public class HunterBehavior : MonoBehaviour, IEnemyBehavior
     private IEnumerator ShootAtPlayer()
     {
         _canShoot = false;
+        _enemy.NotifyAttackTriggered();
 
         // Fire projectile toward player
         if (_projectileSpawn != null && _data.ProjectilePrefab != null)

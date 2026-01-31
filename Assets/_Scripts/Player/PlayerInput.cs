@@ -24,6 +24,7 @@ public class PlayerInput : MonoBehaviour
             JumpHeld = Input.GetButton("Jump") || Input.GetKey(KeyCode.C),
             Move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")),
             GrabDown = Input.GetButtonDown("Grab") || Input.GetKeyDown(KeyCode.E),
+            BreakDown = Input.GetButtonDown("Break") || Input.GetKeyDown(KeyCode.L),
             PrimaryDown = Input.GetButtonDown("Primary") || Input.GetKeyDown(KeyCode.J),
             SecondaryDown = Input.GetButtonDown("Secondary") || Input.GetKeyDown(KeyCode.K)
         };

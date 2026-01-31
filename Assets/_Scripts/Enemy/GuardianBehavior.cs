@@ -152,7 +152,7 @@ public class GuardianBehavior : MonoBehaviour, IEnemyBehavior
     {
         var spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
         if (spriteRenderer)
-            spriteRenderer.flipX = !_isFacingRight;
+            spriteRenderer.flipX = _isFacingRight;
 
         // Flip hold anchor
         if (_holdAnchor != null)
@@ -185,6 +185,7 @@ public class GuardianBehavior : MonoBehaviour, IEnemyBehavior
     {
         _canGrab = false;
         _isGrabbing = true;
+        _enemy.NotifyAttackWindupStarted();
 
         // Lock the grab direction to where player was initially seen
         _grabDirection = _isFacingRight ? Vector2.right : Vector2.left;
@@ -215,12 +216,14 @@ public class GuardianBehavior : MonoBehaviour, IEnemyBehavior
         // Check if we grabbed the player (hit can be player root or child collider)
         if (hit != null && (hit.transform == _player || hit.transform.IsChildOf(_player)))
         {
+            _enemy.NotifyAttackSucceeded();
             GrabPlayer();
             yield return new WaitForSeconds(_data.PlayerHoldDuration);
             ThrowPlayer();
         }
         else
         {
+            _enemy.NotifyAttackFailed();
             // Missed - cooldown before next attempt
             _isGrabbing = false;
             yield return new WaitForSeconds(_data.GrabMissCooldown);
