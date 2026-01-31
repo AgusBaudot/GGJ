@@ -106,6 +106,7 @@ public class MaskManager : MonoBehaviour
 
     public void ApplyDamage(int amount)
     {
+        Debug.LogWarning("dmg to player");
         OnDamageReceived?.Invoke(amount);
         if (!IsMaskless())
             CurrentMask.TakeDamage(amount);

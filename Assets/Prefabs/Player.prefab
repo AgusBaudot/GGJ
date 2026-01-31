@@ -29686,6 +29686,7 @@ MonoBehaviour:
   _anim: {fileID: 7961592145372915264}
   _sprite: {fileID: 7961592145372915267}
   _maskManager: {fileID: 0}
+  _projectileSpawnpoint: {fileID: 7961592144898100078}
   _jumpParticles: {fileID: 7961592144566373560}
   _launchParticles: {fileID: 7961592144486146733}
   _moveParticles: {fileID: 7961592146263246484}

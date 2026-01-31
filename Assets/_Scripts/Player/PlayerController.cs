@@ -209,13 +209,29 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (!_burst.IsBursting || _burst.CurrentBurst == null) return;
+        //Player and enemy collide
+        //if player is tackling, player does damage to enemy and stuns him
+        //else
+        //enemy does damage to player
 
-        if (other.gameObject.TryGetComponent(out Enemy enemy))
+        //First ensure collision is with enemy.
+        if (!other.gameObject.TryGetComponent(out Enemy enemy)) return;
+
+        //If player isn't tackling, damage him.
+        if (!_burst.IsBursting || _burst.CurrentBurst == null)
+        {
+            enemy.TryAttack();
+        }
+        //If player was tackling, damage and stun enemy
+        else
+        {
             _playerAttack.OnBurstHitEnemy(enemy, _burst.CurrentBurst);
+            Debug.LogWarning("Differentiate somehow early burst end.");
+            _burst.EndBurst();
+        }
 
-        Debug.LogWarning("Differentiate somehow early burst end.");
-        _burst.EndBurst();
+        // if (other.gameObject.TryGetComponent(out Enemy enemy))
+        // _playerAttack.OnBurstHitEnemy(enemy, _burst.CurrentBurst);
     }
 
     #endregion

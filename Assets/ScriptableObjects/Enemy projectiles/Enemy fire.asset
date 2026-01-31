@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aecaf88e766ab7e4bb68899607214e37, type: 3}
-  m_Name: Fire ranged
+  m_Name: Enemy fire
   m_EditorClassIdentifier: 
   Damage: 2
   Velocity: 9.5

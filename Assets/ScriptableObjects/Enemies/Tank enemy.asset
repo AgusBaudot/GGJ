@@ -14,9 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxHP: 5
   ContactDmg: 10
-  MoveSpeed: 10
+  MoveSpeed: 2
   Behavior: 2
   DroppedMask: {fileID: 11400000, guid: de018b3fa482f8a47aef1fe0858b77ae, type: 2}
-  DetectionRange: 5
+  DetectionDistance: 0
   AttackDistance: 2
+  FleeDistance: 0
+  JumpForce: 10
+  ApproachHorizontalSpeed: 5
+  ApproachJumpForce: 10
+  DashSpeed: 20
+  DashDuration: 0.3
+  AttackCooldown: 2
+  BackwardsSpeed: 3
+  ProjectilePrefab: {fileID: 0}
+  RangedAttackData: {fileID: 0}
+  GrabWindupTime: 1
+  GrabOffset: {x: 1, y: 0.5}
+  GrabSize: {x: 1, y: 2}
+  PlayerHoldDuration: 0.5
+  PlayerHoldOffset: {x: 0, y: 2}
+  ThrowDirection: {x: 2, y: -0.25}
+  ThrowForce: 20
+  GrabMissCooldown: 1
   EnemySprite: {fileID: 2747690628134850419, guid: 16037dbd798344f57a526d53d48f5ead, type: 3}

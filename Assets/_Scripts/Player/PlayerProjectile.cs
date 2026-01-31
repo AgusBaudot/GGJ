@@ -12,7 +12,9 @@ public class PlayerProjectile : MonoBehaviour
         _direction = direction;
         _spawnTime = Time.time;
 
-        GetComponentInChildren<SpriteRenderer>().sprite = data.ProjectileSprite;
+        var renderer = GetComponentInChildren<SpriteRenderer>();
+        renderer.sprite = data.ProjectileSprite;
+        renderer.flipX = direction == Vector2.left;
         
         var anim = GetComponentInChildren<Animator>();
         if (anim && data.AnimatorOverride)

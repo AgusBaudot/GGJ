@@ -16,6 +16,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private PlayerProjectile _projectilePrefab;
     [SerializeField] private Transform _projectileSpawn;
     [SerializeField] private Transform _holdAnchor;
+       
 
     private float _lastShotTime;
     private float _grabCooldownEndTime;
@@ -54,18 +55,18 @@ public class PlayerAttack : MonoBehaviour
                 break;
         }
     }
-
+    
     private void DoBasic()
     {
         //Handled in PlayerBurst.cs
     }
 
-
     public void OnBurstHitEnemy(Enemy enemy, MovementDashData data)
     {
         if (!data.DealsDamage) return;
-        
-        enemy.TakeDamage((int)_maskManager.CurrentMask.Data.DmgModifier);
+
+        int dmg = _maskManager.CurrentMask == null ? (int)_stats.BaseDamage : (int)_maskManager.CurrentMask.Data.DmgModifier;
+        enemy.TakeDamage(dmg);
 
         if (enemy.IsAlive)
             enemy.ApplyStun(data.StunDuration);
@@ -205,14 +206,6 @@ public class PlayerAttack : MonoBehaviour
         }
         var anchor = _holdAnchor != null ? _holdAnchor : transform;
         _heldEnemy.transform.position = anchor.position;
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            collision.gameObject.GetComponent<Enemy>().TakeDamage(100);
-        }
     }
 
     private void OnDrawGizmos()

@@ -4,6 +4,7 @@ using UnityEngine;
 /// <summary>
 /// Handles burst movement mechanics (dash and tackle attacks)
 /// </summary>
+/// 
 public class PlayerBurst : MonoBehaviour
 {
     public event Action Dashed;
