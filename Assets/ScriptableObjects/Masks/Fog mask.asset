@@ -21,3 +21,4 @@ MonoBehaviour:
   SecondaryType: 2
   DoubleJump: 0
   MaskSprite: {fileID: 0}
+  MaskAnimationID: 2

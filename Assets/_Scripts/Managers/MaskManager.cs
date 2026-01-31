@@ -13,6 +13,7 @@ public class MaskManager : MonoBehaviour
     public event Action<MaskData> OnMaskEquipped;
     public event Action OnMaskBroken;
     public event Action OnPlayerDied;
+    public event Action<int> OnDamageReceived;
 
     public MaskInstance CurrentMask =>
         _maskStack.Count > 0 ? _maskStack.Peek() : null;
@@ -105,6 +106,7 @@ public class MaskManager : MonoBehaviour
 
     public void ApplyDamage(int amount)
     {
+        OnDamageReceived?.Invoke(amount);
         if (!IsMaskless())
             CurrentMask.TakeDamage(amount);
         else

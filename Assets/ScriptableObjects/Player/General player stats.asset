@@ -42,6 +42,8 @@ MonoBehaviour:
   TeleportDuration: 0.4
   TeleportCooldown: 3
   TeleportBuffer: 0.2
+  TeleportDissolveDuration: 0.2
+  TeleportReappearDuration: 0.2
   TackleData: {fileID: 11400000, guid: c91f68361f7984c4e8972632f81179bd, type: 2}
   BaseDamage: 1
   BasicAttackSpeed: 15
@@ -49,6 +51,10 @@ MonoBehaviour:
   BasicAttackCooldown: 1
   BasicAttackStunDuration: 0.5
   BasicAttackBuffer: 0.2
-  GrabAttackRange: 1
+  GrabAttackRange: 2.5
+  ThrowForce: 500
+  DropForce: 350
+  ThrowDirection: {x: 2, y: 1}
+  DropDirection: {x: 0.5, y: 0.5}
   GrabAttackCooldown: 2
   GrabAttackBuffer: 0.2

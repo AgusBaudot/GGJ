@@ -2173,6 +2173,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1903188420}
     m_Modifications:
+    - target: {fileID: 6007264869591380357, guid: 2cc362ca974b3a8428537698940a03cc, type: 3}
+      propertyPath: _maskManager
+      value: 
+      objectReference: {fileID: 183177044}
     - target: {fileID: 7961592145214805889, guid: 2cc362ca974b3a8428537698940a03cc, type: 3}
       propertyPath: _maskManager
       value: 
@@ -2229,25 +2233,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 7961592145372915265, guid: 2cc362ca974b3a8428537698940a03cc, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7961592145372915265, guid: 2cc362ca974b3a8428537698940a03cc, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7961592145372915267, guid: 2cc362ca974b3a8428537698940a03cc, type: 3}
-      propertyPath: m_Size.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7961592145372915267, guid: 2cc362ca974b3a8428537698940a03cc, type: 3}
-      propertyPath: m_Size.y
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7961592145372915267, guid: 2cc362ca974b3a8428537698940a03cc, type: 3}
-      propertyPath: m_DrawMode
-      value: 0
-      objectReference: {fileID: 0}
+    - target: {fileID: 7961592145860871592, guid: 2cc362ca974b3a8428537698940a03cc, type: 3}
+      propertyPath: _maskManager
+      value: 
+      objectReference: {fileID: 183177044}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2cc362ca974b3a8428537698940a03cc, type: 3}

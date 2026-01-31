@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Fire ranged
   m_EditorClassIdentifier: 
   Damage: 2
-  Velocity: 2
+  Velocity: 9.5
   LifeTime: 3
   FireRate: 0.5
-  ProjectileSprite: {fileID: 21300000, guid: ab0ede2e5adec814588145c68c52d8e9, type: 3}
+  ProjectileSprite: {fileID: 21300000, guid: 15ccae7349707714795f9b366cc8fd2f, type: 3}
+  AnimatorOverride: {fileID: 22100000, guid: 77fb915e294a8fa46ac892c4a70d1bb1, type: 2}
