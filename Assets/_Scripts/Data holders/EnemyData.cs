@@ -76,6 +76,9 @@ public class EnemyData : ScriptableObject
     
     [Header("VISUALS")]
     public Sprite EnemySprite;
+    
+    [Header("ANIMATION")]
+    public int EnemyAnimationID;
 }
 
 public enum BehaviorType

@@ -303,6 +303,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c7673bd1db36694d817bec15fcd85b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerStats: {fileID: 11400000, guid: 8686caffd5bcaa04ca8bd0eb8ca0e546, type: 2}
+  _playerSprite: {fileID: 2111079181}
 --- !u!1 &449705417
 GameObject:
   m_ObjectHideFlags: 0
@@ -1720,6 +1722,11 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!212 &2111079181 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 7961592145372915267, guid: 2cc362ca974b3a8428537698940a03cc, type: 3}
+  m_PrefabInstance: {fileID: 7961592145251181205}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7961592145251181205
 PrefabInstance:
   m_ObjectHideFlags: 0

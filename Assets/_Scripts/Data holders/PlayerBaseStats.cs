@@ -137,4 +137,15 @@ public class PlayerBaseStats : ScriptableObject
 
     [Tooltip("The amount time we buffer this attack. This allows the attack input before actually having an attack available.")]
     public float GrabAttackBuffer = 0.2f;
+
+    [Header("INVINCIBILITY")]
+    [Tooltip("How long the player stays invincible after being hit.")]
+    public float InvincibilityDuration = 1.5f;
+
+    [Tooltip("How quickly the sprite flashes during invincibility (e.g. 0.1 or 0.2).")]
+    public float BlinkInterval = 0.1f;
+
+    [Tooltip("Transparency (0–1) during the 'off' blink state. 0 = fully transparent, 1 = opaque.")]
+    [Range(0f, 1f)]
+    public float FlashAlpha = 0.3f;
 }

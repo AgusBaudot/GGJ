@@ -58,3 +58,6 @@ MonoBehaviour:
   DropDirection: {x: 0.5, y: 0.5}
   GrabAttackCooldown: 2
   GrabAttackBuffer: 0.2
+  InvincibilityDuration: 1.5
+  BlinkInterval: 0.15
+  FlashAlpha: 0.3

@@ -1,24 +1,33 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// Only place that knows what mask is active, everyone else queries, nobody sets.
+/// Handles damage application and invincibility (blink) after hit.
 /// </summary>
 
 public class MaskManager : MonoBehaviour
 {
     private const int MAX_MASK_STACK_SIZE = 3;
 
+    [Header("INVINCIBILITY")]
+    [SerializeField] private PlayerBaseStats _playerStats;
+    [SerializeField] private SpriteRenderer _playerSprite;
+
     public event Action<MaskData> OnMaskEquipped;
     public event Action OnMaskBroken;
     public event Action OnPlayerDied;
     public event Action<int> OnDamageReceived;
 
+    public bool IsInvincible => _isInvincible;
     public MaskInstance CurrentMask =>
         _maskStack.Count > 0 ? _maskStack.Peek() : null;
 
     private Stack<MaskInstance> _maskStack = new();
+    private bool _isInvincible;
+    private Coroutine _invincibilityRoutine;
 
     public bool AddMaskToStack(MaskData maskData)
     {
@@ -106,16 +115,63 @@ public class MaskManager : MonoBehaviour
 
     public void ApplyDamage(int amount)
     {
-        Debug.LogWarning("dmg to player");
+        if (_isInvincible)
+            return;
+
         OnDamageReceived?.Invoke(amount);
         if (!IsMaskless())
             CurrentMask.TakeDamage(amount);
         else
             OnPlayerDied?.Invoke();
+
+        StartInvincibility();
+    }
+
+    private void StartInvincibility()
+    {
+        if (_invincibilityRoutine != null)
+            StopCoroutine(_invincibilityRoutine);
+        _invincibilityRoutine = StartCoroutine(InvincibilityCoroutine());
+    }
+
+    private IEnumerator InvincibilityCoroutine()
+    {
+        _isInvincible = true;
+
+        float duration = _playerStats != null ? _playerStats.InvincibilityDuration : 1.5f;
+        float interval = _playerStats != null ? _playerStats.BlinkInterval : 0.1f;
+        float flashAlpha = _playerStats != null ? _playerStats.FlashAlpha : 0.3f;
+
+        bool visible = true;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            if (_playerSprite != null)
+            {
+                Color c = _playerSprite.color;
+                _playerSprite.color = new Color(c.r, c.g, c.b, visible ? 1f : flashAlpha);
+                visible = !visible;
+            }
+
+            yield return new WaitForSeconds(interval);
+            elapsed += interval;
+        }
+
+        if (_playerSprite != null)
+        {
+            Color c = _playerSprite.color;
+            _playerSprite.color = new Color(c.r, c.g, c.b, 1f);
+        }
+
+        _isInvincible = false;
+        _invincibilityRoutine = null;
     }
 
     private void OnDestroy()
     {
+        if (_invincibilityRoutine != null)
+            StopCoroutine(_invincibilityRoutine);
         if (CurrentMask != null)
             CurrentMask.OnBreak -= BreakCurrentMask;
     }
