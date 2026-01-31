@@ -17,4 +17,6 @@ MonoBehaviour:
   MoveSpeed: 10
   Behavior: 3
   DroppedMask: {fileID: 11400000, guid: af1fba4a556d4a043beeb19f59965456, type: 2}
+  DetectionRange: 5
+  AttackDistance: 5
   EnemySprite: {fileID: 2747690628134850419, guid: 16037dbd798344f57a526d53d48f5ead, type: 3}

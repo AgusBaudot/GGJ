@@ -28,26 +28,22 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        //Switch on BehaviorType and code accordingly
         switch (Data.Behavior)
         {
             case BehaviorType.Hunter:
+                //Fire mask.
                 break;
             case BehaviorType.Acrobat:
+                //Movement mask.
                 break;
             case BehaviorType.Guardian:
+                //Tank mask.
                 break;
             case BehaviorType.Sneaky:
+                //Fog mask.
                 break;
         }
     }
-
-    /*
-     Hunter, //Fire
-    Acrobat, //Movement
-    Guardian, //Tank
-    Sneaky //Fog
-     */
 
     public void ApplyStun(float duration)
     {
@@ -78,5 +74,13 @@ public class Enemy : MonoBehaviour
     {
         _maskSpawner.SpawnPickupMask(Data.DroppedMask, transform.position);
         Destroy(gameObject);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.black;
+        Gizmos.DrawWireSphere(transform.position, Data.DetectionRange);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, Data.att);
     }
 }

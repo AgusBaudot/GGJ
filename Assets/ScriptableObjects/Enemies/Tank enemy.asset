@@ -15,6 +15,8 @@ MonoBehaviour:
   MaxHP: 5
   ContactDmg: 10
   MoveSpeed: 10
-  Behavior: 1
+  Behavior: 2
   DroppedMask: {fileID: 11400000, guid: de018b3fa482f8a47aef1fe0858b77ae, type: 2}
+  DetectionRange: 5
+  AttackDistance: 2
   EnemySprite: {fileID: 2747690628134850419, guid: 16037dbd798344f57a526d53d48f5ead, type: 3}
