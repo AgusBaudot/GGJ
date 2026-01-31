@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -28,7 +29,25 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
         //Switch on BehaviorType and code accordingly
+        switch (Data.Behavior)
+        {
+            case BehaviorType.Hunter:
+                break;
+            case BehaviorType.Acrobat:
+                break;
+            case BehaviorType.Guardian:
+                break;
+            case BehaviorType.Sneaky:
+                break;
+        }
     }
+
+    /*
+     Hunter, //Fire
+    Acrobat, //Movement
+    Guardian, //Tank
+    Sneaky //Fog
+     */
 
     public void ApplyStun(float duration)
     {

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Fog ranged
   m_EditorClassIdentifier: 
   Damage: 1
-  Velocity: 2
+  Velocity: 9.5
   LifeTime: 3
-  FireRate: 0.5
+  FireRate: 0.8
   ProjectileSprite: {fileID: 21300000, guid: cb0f553229d843d4b8512eabcf1b7145, type: 3}
   AnimatorOverride: {fileID: 22100000, guid: e3321522752b98f4eb24f00ee099f1c5, type: 2}

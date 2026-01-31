@@ -1,30 +1,17 @@
-using System;
-using System.Collections;
 using UnityEngine;
+using System.Collections; // Needed for IEnumerator
 
-/// <summary>
-/// Handles teleport mechanics
-/// </summary>
-[RequireComponent(typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
 public class PlayerTeleport : MonoBehaviour
 {
     [SerializeField] private PlayerBaseStats _stats;
 
-    public event Action Teleported;
-
-    private float _time;
-    private bool _teleportBuffered;
     private bool _canTeleport = true;
-    private bool _isTeleporting;
-    private float _timeTeleportPressed;
     private Rigidbody2D _rb;
     private CapsuleCollider2D _col;
-    private SpriteRenderer _renderer;
 
-    public bool IsTeleporting => _isTeleporting;
-
-    private bool HasBufferedTeleport =>
-        _teleportBuffered && _time < _timeTeleportPressed + _stats.TeleportBuffer;
+    // We only need to expose if we are technically in the middle of a move
+    public bool IsTeleporting { get; private set; }
+    public bool CanTeleport => _canTeleport;
 
     private void Awake()
     {
@@ -32,24 +19,16 @@ public class PlayerTeleport : MonoBehaviour
         _col = GetComponent<CapsuleCollider2D>();
     }
 
-    private void Update()
-    {
-        _time += Time.deltaTime;
-    }
+    // REMOVED: Update() and BufferTeleport() are no longer needed. 
+    // The Controller determines when input happens.
 
-    public void BufferTeleport()
+    public bool GetTeleportTarget(int direction, out Vector2 target)
     {
-        _teleportBuffered = true;
-        _timeTeleportPressed = _time;
-    }
+        target = Vector2.zero;
 
-    public bool TryStartTeleport(int direction)
-    {
-        if (_isTeleporting) return false;
-        if (!HasBufferedTeleport || !_canTeleport) return false;
-
-        _teleportBuffered = false;
-        _canTeleport = false;
+        // FIX: Only check if the cooldown allows it. 
+        // We removed the "hasBuffered" check because the Controller calls this explicitly.
+        if (!_canTeleport) return false;
 
         Vector2 dir = new Vector2(direction, 0f);
         Vector2 origin = _col.bounds.center;
@@ -58,71 +37,45 @@ public class PlayerTeleport : MonoBehaviour
         bool cached = Physics2D.queriesStartInColliders;
         Physics2D.queriesStartInColliders = true;
 
-        // Check if space is free
         RaycastHit2D hit = Physics2D.CapsuleCast(
-            origin,
-            _col.size * 0.9f,
-            _col.direction,
-            0f,
-            dir,
-            distance,
-            _stats.GroundLayers
+            origin, _col.size * 0.9f, _col.direction, 0f, dir, distance, _stats.GroundLayers
         );
 
-        Vector2 teleportTarget = hit
-            ? hit.centroid
-            : origin + dir * distance;
+        target = hit ? hit.centroid : origin + dir * distance;
 
-        teleportTarget.y -= _col.bounds.center.y - _rb.position.y;
+        // Adjust for pivot
+        target.y -= _col.bounds.center.y - _rb.position.y;
 
         Physics2D.queriesStartInColliders = cached;
-
-        if (!_renderer)
-            _renderer = GetComponentInChildren<SpriteRenderer>();
-
-        StartCoroutine(TeleportRoutine(teleportTarget));
         return true;
     }
 
-    private IEnumerator TeleportRoutine(Vector2 targetPosition)
+    public void ExecuteTeleportMove(Vector2 targetPosition)
     {
-        _isTeleporting = true;
-        Teleported?.Invoke();
+        IsTeleporting = true;
+        _canTeleport = false; // Lock cooldown immediately
 
-        // 1. Kill both visuals and physics immediately
-        _renderer.enabled = false;
-        _rb.velocity = Vector2.zero;
-
+        // 1. Handle specialized children (TrailRenderer)
         var trail = GetComponentInChildren<TrailRenderer>();
         if (trail) trail.emitting = false;
 
-        yield return Helpers.GetWait(_stats.TeleportDuration);
-
-        // 2. Move the Rigidbody
+        // 2. Physics Move
         _rb.position = targetPosition;
         _rb.velocity = Vector2.zero;
-
-        // 3. Force the Transform to match the Rigidbody position now
         transform.position = targetPosition;
-
-        // 4. Force physics to catch up immediately
         Physics2D.SyncTransforms();
 
-        // 5. Wait two frames for camera to catch up
-        yield return null;
-        yield return null;
-
-        _renderer.enabled = true;
-        _isTeleporting = false;
-
+        // 3. Reset Trail
         if (trail) trail.emitting = true;
 
-        StartCoroutine(TeleportCooldown());
+        // 4. Start internal cooldown
+        StartCoroutine(CooldownRoutine());
     }
 
-    private IEnumerator TeleportCooldown()
+    private IEnumerator CooldownRoutine()
     {
-        yield return Helpers.GetWait(_stats.TeleportCooldown);
+        yield return new WaitForSeconds(_stats.TeleportCooldown);
         _canTeleport = true;
+        IsTeleporting = false;
     }
 }

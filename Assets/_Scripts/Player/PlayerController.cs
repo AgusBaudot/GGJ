@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -26,9 +27,10 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     // State
     private bool _grounded;
+    private bool _cachedQueryStartInColliders;
+    private bool _isTeleportingSequence; //Locks input and physics during the animation.
     private float _frameLeftGrounded = float.MinValue;
     private MaskPickup _nearbyMask;
-    private bool _cachedQueryStartInColliders;
 
     public int GetDirection => _input.FacingDirection;
 
@@ -38,7 +40,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
     public event Action<bool, float> GroundedChanged;
     public event Action Jumped;
     public event Action Dashed;
-    public event Action Teleported;
+    public event Action TeleportStarted;
+    public event Action TeleportEnded;
     public event Action<AttackType> Attacked;
 
     #endregion
@@ -60,12 +63,14 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // Subscribe to component events (fire only when abilities actually execute)
         _jump.Jumped += OnJumped;
         _burst.Dashed += OnDashed;
-        _teleport.Teleported += OnTeleported;
         _playerAttack.AttackExecuted += type => Attacked?.Invoke(type);
     }
 
     private void Update()
     {
+        //Block input processing if player is in the middle of the teleport sequence
+        if (_isTeleportingSequence) return;
+
         ProcessInput();
     }
 
@@ -111,7 +116,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
                     break;
 
                 case SecondaryType.Teleport:
-                    _teleport.BufferTeleport();
+                    if (!_teleport.IsTeleporting)
+                        StartCoroutine(TeleportSequence());
                     break;
             }
         }
@@ -129,7 +135,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
             velocity = _burst.UpdateBurst();
             velocity.y = 0; // Keep burst horizontal
         }
-        else if (!_teleport.IsTeleporting)
+        else if (_isTeleportingSequence)
+        {
+            velocity = Vector2.zero;
+        }
+        else
         {
             // Normal movement - apply jump first, then pass to movement before UpdateMovement
             velocity = _jump.HandleJump(velocity);
@@ -137,17 +147,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _movement.SetEndedJumpEarly(_jump.GetEndedJumpEarly());
             _movement.UpdateMovement(_input.CurrentInput.Move);
             velocity = _movement.GetVelocity();
-        }
-        else
-        {
-            // Teleporting - freeze movement
-            velocity = Vector2.zero;
-        }
-
-        // Try to start teleport if buffered
-        if (!_teleport.IsTeleporting && _maskManager.HasTeleport())
-        {
-            _teleport.TryStartTeleport(GetDirection);
         }
 
         _movement.SetVelocity(velocity);
@@ -221,6 +220,30 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     #endregion
 
+    private IEnumerator TeleportSequence()
+    {
+        if (!_teleport.GetTeleportTarget(GetDirection, out Vector2 target))
+            yield break;
+
+        _isTeleportingSequence = true;
+
+        TeleportStarted?.Invoke(); // Signals Animator to play "Dissolve"
+
+        yield return new WaitForSeconds(_stats.TeleportDissolveDuration);
+
+        yield return new WaitForSeconds(_stats.TeleportDuration);
+
+        _teleport.ExecuteTeleportMove(target);
+
+        yield return null;
+
+        TeleportEnded?.Invoke(); // Signals Animator to play "Reappear"
+
+        yield return new WaitForSeconds(_stats.TeleportReappearDuration);
+
+        _isTeleportingSequence = false;
+    }
+
     private void TryGrabMask()
     {
         bool grabbed = _maskManager.AddMaskToStack(_nearbyMask.Data);
@@ -238,11 +261,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private void OnDashed()
     {
         Dashed?.Invoke();
-    }
-
-    private void OnTeleported()
-    {
-        Teleported?.Invoke();
     }
 
 #if UNITY_EDITOR

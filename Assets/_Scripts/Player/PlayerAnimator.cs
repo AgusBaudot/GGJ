@@ -37,7 +37,8 @@ public class PlayerAnimator : MonoBehaviour
     {
         _player.Jumped += OnJumped;
         _player.Dashed += OnDashed;
-        _player.Teleported += OnTeleported;
+        _player.TeleportStarted += OnTeleportStarted;
+        _player.TeleportEnded += OnTeleportEnded;
         _player.GroundedChanged += OnGroundedChanged;
         _player.Attacked += OnAttacked;
 
@@ -55,7 +56,8 @@ public class PlayerAnimator : MonoBehaviour
     {
         _player.Jumped -= OnJumped;
         _player.Dashed -= OnDashed;
-        _player.Teleported -= OnTeleported;
+        _player.TeleportStarted -= OnTeleportStarted;
+        _player.TeleportEnded -= OnTeleportEnded;
         _player.GroundedChanged -= OnGroundedChanged;
         _player.Attacked -= OnAttacked;
 
@@ -113,29 +115,40 @@ public class PlayerAnimator : MonoBehaviour
         _anim.SetTrigger(DashKey);
     }
 
-    private void OnTeleported()
+    private void OnTeleportStarted()
     {
         _anim.SetTrigger(TeleportKey);
-        // Add teleport VFX here if desired (e.g. particles, screen effect)
+    }
+
+    private void OnTeleportEnded()
+    {
+        _anim.SetTrigger(TeleportEndKey);
     }
 
     private void OnMaskEquipped(MaskData data)
     {
-        _anim.SetInteger(MaskEquippedKey, data != null ? data.MaskAnimationID : 0);
+        //Set ID to animator so that it knows which mask.
+        _anim.SetFloat(MaskEquippedKey, data != null ? data.MaskAnimationID : 0);
+
+        //Fire trigger to play animation once.
+        if (data != null)
+        {
+            _anim.SetTrigger(MaskEquippedTriggerKey);
+        }
     }
 
     private void OnMaskBroken()
     {
         if (_maskManager != null && _maskManager.IsMaskless())
-            _anim.SetInteger(MaskEquippedKey, 0);
+            _anim.SetFloat(MaskEquippedKey, 0);
     }
 
     private void SyncMaskState()
     {
         if (_maskManager.IsMaskless())
-            _anim.SetInteger(MaskEquippedKey, 0);
+            _anim.SetFloat(MaskEquippedKey, 0);
         else if (_maskManager.CurrentMask != null)
-            _anim.SetInteger(MaskEquippedKey, _maskManager.CurrentMask.Data.MaskAnimationID);
+            _anim.SetFloat(MaskEquippedKey, _maskManager.CurrentMask.Data.MaskAnimationID);
     }
 
     private void OnAttacked(AttackType type)
@@ -197,9 +210,11 @@ public class PlayerAnimator : MonoBehaviour
     private static readonly int JumpKey = Animator.StringToHash("Jump");
     private static readonly int DashKey = Animator.StringToHash("Dash");
     private static readonly int TeleportKey = Animator.StringToHash("Teleport");
+    private static readonly int TeleportEndKey = Animator.StringToHash("TeleportEnd");
     private static readonly int IsWalking = Animator.StringToHash("Walking");
     private static readonly int BasicAttackKey = Animator.StringToHash("BasicAttack");
     private static readonly int RangedAttackKey = Animator.StringToHash("RangedAttack");
     private static readonly int GrabAttackKey = Animator.StringToHash("GrabAttack");
     private static readonly int MaskEquippedKey = Animator.StringToHash("MaskEquipped");
+    private static readonly int MaskEquippedTriggerKey = Animator.StringToHash("MaskEquippedTrigger");
 }

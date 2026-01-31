@@ -214,4 +214,13 @@ public class PlayerAttack : MonoBehaviour
             collision.gameObject.GetComponent<Enemy>().TakeDamage(100);
         }
     }
+
+    private void OnDrawGizmos()
+    {
+        Vector2 origin = transform.position;
+        float range = _stats.GrabAttackRange;
+
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireCube(new Vector2(origin.x + range / 2, origin.y + range / 2), Vector2.one * range);
+    }
 }

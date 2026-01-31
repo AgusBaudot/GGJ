@@ -17,8 +17,8 @@ public class EnemyData : ScriptableObject
 
 public enum BehaviorType
 {
-    Walker,
-    Charger,
-    Jumper,
-    Ranged
-} //Idk what else
+    Hunter, //Fire
+    Acrobat, //Movement
+    Guardian, //Tank
+    Sneaky //Fog
+}

@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &595174139
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 595174140}
+  m_Layer: 6
+  m_Name: Holded enemy
+  m_TagString: Untagged
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &595174140
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 595174139}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.01, y: 2.017, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7961592145214805894}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7961592144486146720
 GameObject:
   m_ObjectHideFlags: 0
@@ -14713,6 +14744,7 @@ Transform:
   m_Children:
   - {fileID: 7961592145860871598}
   - {fileID: 7961592144898100078}
+  - {fileID: 595174140}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -14746,7 +14778,7 @@ MonoBehaviour:
   _maskManager: {fileID: 0}
   _projectilePrefab: {fileID: 7986571306740652339, guid: 2248ecb149754ea4fa9311147ac91577, type: 3}
   _projectileSpawn: {fileID: 7961592144898100078}
-  _holdAnchor: {fileID: 0}
+  _holdAnchor: {fileID: 595174140}
 --- !u!50 &7961592145214805888
 Rigidbody2D:
   serializedVersion: 4
