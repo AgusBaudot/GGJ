@@ -33,6 +33,11 @@ public class UIController : MonoBehaviour
         SceneManager.LoadScene("Audio and Video");
     }
 
+    public void ToGameOver()
+    {
+        SceneManager.LoadScene("GameOver");
+    }
+
     public void QuitGame()
     {
         Application.Quit();
