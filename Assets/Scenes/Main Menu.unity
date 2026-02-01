@@ -285,7 +285,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 365869362}
-  - component: {fileID: 365869364}
   - component: {fileID: 365869363}
   m_Layer: 5
   m_Name: MenuManager
@@ -326,23 +325,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91e923bce0731a24cb69347fe04f85f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &365869364
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 365869361}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 630e65dd1cae7b346959b56a49bebe99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pauseMenu: {fileID: 0}
-  optionsMenu: {fileID: 0}
-  audioVideoMenu: {fileID: 0}
-  confirmExitMenu: {fileID: 0}
-  controlsMenu: {fileID: 0}
 --- !u!1 &548494959
 GameObject:
   m_ObjectHideFlags: 0
