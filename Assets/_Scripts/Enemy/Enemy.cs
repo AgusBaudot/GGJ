@@ -99,6 +99,13 @@ public class Enemy : MonoBehaviour
         if (!IsAlive || _stunned) return;
         _behavior?.FixedUpdateBehavior();
     }
+    
+    public void ApplyStun()
+    {
+        if (_stunned) return;
+        _stunned = true;
+        _behavior?.OnStunned();
+    }
 
     public void ApplyStun(float duration)
     {
@@ -113,6 +120,11 @@ public class Enemy : MonoBehaviour
         yield return Helpers.GetWait(duration);
         _stunned = false;
         _behavior?.OnStunEnded();
+    }
+
+    public void RemoveStun()
+    {
+        _stunned = false;
     }
     
     public void TakeDamage(int amount)

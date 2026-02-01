@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -16,13 +17,16 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private PlayerProjectile _projectilePrefab;
     [SerializeField] private Transform _projectileSpawn;
     [SerializeField] private Transform _holdAnchor;
-       
+    [SerializeField] private ArmAnimator _armAnimator;
 
     private float _lastShotTime;
     private float _grabCooldownEndTime;
     private Enemy _heldEnemy;
     private PlayerInput _input;
     private Collider2D _playerCollider;
+    private bool _isEnemyAtHoldPosition;
+    private Coroutine _grabTeleportRoutine;
+    private Coroutine _throwRoutine;
 
     public bool IsHoldingEnemy => _heldEnemy != null;
 
@@ -136,29 +140,82 @@ public class PlayerAttack : MonoBehaviour
 
     private void GrabEnemy(Enemy enemy)
     {
+        if (_grabTeleportRoutine != null)
+            StopCoroutine(_grabTeleportRoutine);
+
         _heldEnemy = enemy;
+        _isEnemyAtHoldPosition = false;
         var rb = enemy.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
             rb.simulated = false;
+            enemy.ApplyStun();
         }
         var enemyCol = enemy.GetComponent<Collider2D>();
         if (_playerCollider != null && enemyCol != null)
             Physics2D.IgnoreCollision(_playerCollider, enemyCol, true);
-        enemy.transform.SetParent(_holdAnchor != null ? _holdAnchor : transform);
-        enemy.transform.localPosition = Vector3.zero;
+
+        _grabTeleportRoutine = StartCoroutine(GrabTeleportAfterDelay());
+    }
+
+    private IEnumerator GrabTeleportAfterDelay()
+    {
+        float delay = Mathf.Max(0f, _stats.GrabTeleportDelay);
+        if (delay > 0f)
+            yield return new WaitForSeconds(delay);
+
+        _grabTeleportRoutine = null;
+        if (_heldEnemy == null) yield break;
+
+        _heldEnemy.transform.SetParent(_holdAnchor != null ? _holdAnchor : transform);
+        _heldEnemy.transform.localPosition = Vector3.zero;
+        _isEnemyAtHoldPosition = true;
     }
 
     private void PerformVoluntaryThrow()
     {
         if (_heldEnemy == null) return;
-        ThrowEnemy(_stats.ThrowDirection, _stats.ThrowForce, voluntary: true);
+        if (_throwRoutine != null) return;
+        if (_grabTeleportRoutine != null)
+        {
+            StopCoroutine(_grabTeleportRoutine);
+            _grabTeleportRoutine = null;
+            TeleportEnemyToHoldNow();
+        }
+        _armAnimator?.PerformThrowAnimation();
+        _throwRoutine = StartCoroutine(ThrowAfterDelay(_stats.ThrowDirection, _stats.ThrowForce, voluntary: true));
     }
 
     private void PerformAutoThrow()
     {
         if (_heldEnemy == null) return;
-        ThrowEnemy(_stats.DropDirection, _stats.DropForce, voluntary: false);
+        if (_throwRoutine != null) return;
+        if (_grabTeleportRoutine != null)
+        {
+            StopCoroutine(_grabTeleportRoutine);
+            _grabTeleportRoutine = null;
+            TeleportEnemyToHoldNow();
+        }
+        _armAnimator?.PerformThrowAnimation();
+        _throwRoutine = StartCoroutine(ThrowAfterDelay(_stats.DropDirection, _stats.DropForce, voluntary: false));
+    }
+
+    private void TeleportEnemyToHoldNow()
+    {
+        if (_heldEnemy == null || _isEnemyAtHoldPosition) return;
+        _heldEnemy.transform.SetParent(_holdAnchor != null ? _holdAnchor : transform);
+        _heldEnemy.transform.localPosition = Vector3.zero;
+        _isEnemyAtHoldPosition = true;
+    }
+
+    private IEnumerator ThrowAfterDelay(Vector2 direction, float force, bool voluntary)
+    {
+        float delay = Mathf.Max(0f, _stats.ThrowForceDelay);
+        if (delay > 0f)
+            yield return new WaitForSeconds(delay);
+
+        _throwRoutine = null;
+        ThrowEnemy(direction, force, voluntary);
     }
 
     private void ThrowEnemy(Vector2 direction, float force, bool voluntary)
@@ -172,7 +229,9 @@ public class PlayerAttack : MonoBehaviour
         {
             rb.simulated = true;
             Vector2 dir = new Vector2(direction.x * _input.FacingDirection, direction.y).normalized;
-            rb.AddForce(dir * force);
+    
+            // Multiply by mass so the "acceleration" (and the arc) stays exactly the same
+            rb.AddForce(dir * force * rb.mass); 
         }
         var enemyCol = enemy.GetComponent<Collider2D>();
         if (_playerCollider != null && enemyCol != null)
@@ -198,12 +257,19 @@ public class PlayerAttack : MonoBehaviour
         if (_heldEnemy == null) return;
         if (!_heldEnemy.IsAlive)
         {
+            if (_grabTeleportRoutine != null)
+            {
+                StopCoroutine(_grabTeleportRoutine);
+                _grabTeleportRoutine = null;
+            }
             var enemyCol = _heldEnemy.GetComponent<Collider2D>();
             if (_playerCollider != null && enemyCol != null)
                 Physics2D.IgnoreCollision(_playerCollider, enemyCol, false);
             _heldEnemy = null;
+            _isEnemyAtHoldPosition = false;
             return;
         }
+        if (!_isEnemyAtHoldPosition) return;
         var anchor = _holdAnchor != null ? _holdAnchor : transform;
         _heldEnemy.transform.position = anchor.position;
     }

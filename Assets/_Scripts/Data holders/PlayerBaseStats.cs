@@ -138,6 +138,12 @@ public class PlayerBaseStats : ScriptableObject
     [Tooltip("The amount time we buffer this attack. This allows the attack input before actually having an attack available.")]
     public float GrabAttackBuffer = 0.2f;
 
+    [Tooltip("Time before teleporting the grabbed enemy to the hold position (top). Lets the grab animation play first.")]
+    public float GrabTeleportDelay = 0.2f;
+
+    [Tooltip("Time before applying throw force (voluntary and auto throw). Lets the throw animation play first.")]
+    public float ThrowForceDelay = 0.2f;
+
     [Header("INVINCIBILITY")]
     [Tooltip("How long the player stays invincible after being hit.")]
     public float InvincibilityDuration = 1.5f;

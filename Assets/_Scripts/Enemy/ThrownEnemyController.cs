@@ -26,6 +26,8 @@ public class ThrownEnemyController : MonoBehaviour
 
         // Damage the thrown enemy (this one)
         self.TakeDamage(_damageAmount);
+        
+        self.RemoveStun();
 
         // If hit another enemy, damage them with the same amount
         if (other.gameObject.TryGetComponent(out Enemy otherEnemy) && otherEnemy.IsAlive)

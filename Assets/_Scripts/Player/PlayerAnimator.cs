@@ -9,6 +9,7 @@ public class PlayerAnimator : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Animator _anim;
+    [SerializeField] private ArmAnimator _armAnim;
     [SerializeField] private SpriteRenderer _sprite;
     [SerializeField] private MaskManager _maskManager;
     [SerializeField] private Transform _projectileSpawnpoint;
@@ -33,6 +34,7 @@ public class PlayerAnimator : MonoBehaviour
     {
         _source = GetComponent<AudioSource>();
         _player = GetComponentInParent<IPlayerController>();
+        _armAnim = GetComponentInChildren<ArmAnimator>();
     }
 
     private void OnEnable()
@@ -178,6 +180,7 @@ public class PlayerAnimator : MonoBehaviour
                 break;
             case AttackType.Grab:
                 _anim.SetTrigger(GrabAttackKey);
+                _armAnim.PerformGrabAnimation();
                 break;
         }
     }
