@@ -3,9 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour
 {
-    public void ToGymScene()
+    public void ToGame()
     {
-        SceneManager.LoadScene("Gym");
+        SceneManager.LoadScene("Playing");
     }
 
     public void ToMainMenuScene()
