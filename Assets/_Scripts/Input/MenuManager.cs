@@ -41,7 +41,10 @@ public class MenuManager : MonoBehaviour
         currentMenu.SetActive(true);
         currentMenu.transform.SetAsLastSibling();
 
-        Time.timeScale = 0f;
+        if (PauseManager.Instance != null)
+            PauseManager.Instance.SetPauseMenuActive(true);
+        else
+            Time.timeScale = 0f;
     }
 
     public void Back()
@@ -49,17 +52,13 @@ public class MenuManager : MonoBehaviour
         if (currentMenu != null)
             currentMenu.SetActive(false);
 
-        if (menuStack.Count > 0)
-        {
-            currentMenu = menuStack.Pop();
-            currentMenu.SetActive(true);
-            currentMenu.transform.SetAsLastSibling();
-        }
+        currentMenu.SetActive(false);
+        currentMenu = null;
+
+        if (PauseManager.Instance != null)
+            PauseManager.Instance.SetPauseMenuActive(false);
         else
-        {
-            currentMenu = null;
             Time.timeScale = 1f;
-        }
     }
     public void OpenOptions() => OpenMenu(optionsMenu);
     public void OpenAudioVideo() => OpenMenu(audioVideoMenu);

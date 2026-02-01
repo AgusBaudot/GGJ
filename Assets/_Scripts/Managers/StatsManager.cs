@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -8,12 +9,15 @@ public class StatsManager : MonoBehaviour
 {
     public static StatsManager Instance { get; private set; }
 
+    public event Action<int> OnEnemyKilled;
+
     [SerializeField] private Transform _player;
 
-    public float DistanceTraveled { get; private set; }
+    public int DistanceTraveled { get; private set; }
     public int EnemiesKilled { get; private set; }
 
-    private float _lastPlayerX;
+    private float _spawnPosition;
+    private float _maxPosition;
 
     private void Awake()
     {
@@ -25,16 +29,17 @@ public class StatsManager : MonoBehaviour
         Instance = this;
 
         if (_player != null)
-            _lastPlayerX = _player.position.x;
+            _spawnPosition = _player.position.x;
+
+        _maxPosition = _spawnPosition;
     }
 
     private void Update()
     {
         if (_player == null) return;
 
-        float x = _player.position.x;
-        DistanceTraveled += Mathf.Max(0f, x - _lastPlayerX);
-        _lastPlayerX = x;
+        _maxPosition = Mathf.Max(_maxPosition, _player.position.x);
+        DistanceTraveled = (int)_maxPosition - (int)_spawnPosition;
     }
 
     /// <summary>
@@ -43,6 +48,7 @@ public class StatsManager : MonoBehaviour
     public void AddKill()
     {
         EnemiesKilled++;
+        OnEnemyKilled?.Invoke(EnemiesKilled);
     }
 
     private void OnDestroy()

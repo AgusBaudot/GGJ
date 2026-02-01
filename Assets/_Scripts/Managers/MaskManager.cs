@@ -43,6 +43,7 @@ public class MaskManager : MonoBehaviour
 
         CurrentMask.OnBreak += BreakCurrentMask;
 
+        PauseManager.Instance.FreezePlayerFor(1.05f);
         OnMaskEquipped?.Invoke(maskData);
         
         return true;
@@ -50,6 +51,7 @@ public class MaskManager : MonoBehaviour
 
     public void BreakCurrentMask()
     {
+        Debug.LogError("What the hell should happen when the player breaks a mask?");
         if (CurrentMask == null)
             return;
         
@@ -61,6 +63,8 @@ public class MaskManager : MonoBehaviour
         if (CurrentMask == null) return;
         
         CurrentMask.OnBreak += BreakCurrentMask;
+        PauseManager.Instance.FreezePlayerFor(1.05f);
+        Debug.Log("Block player movement & input for mask equipping duration.");
         OnMaskEquipped?.Invoke(CurrentMask.Data);
     }
 
@@ -122,7 +126,11 @@ public class MaskManager : MonoBehaviour
         if (!IsMaskless())
             CurrentMask.TakeDamage(amount);
         else
+        {
+            PauseManager.Instance.FreezePlayer();
+            Debug.LogError("Should we freeze whole game aswell? Or just player?");
             OnPlayerDied?.Invoke();
+        }
 
         StartInvincibility();
     }

@@ -8,15 +8,29 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     [SerializeField] private MaskManager _maskManager;
+    [SerializeField] private StatsManager _statsManager;
     [SerializeField] private TextMeshProUGUI _text;
+    [SerializeField] private TextMeshProUGUI _maxPositionText;
+    [SerializeField] private TextMeshProUGUI _killCountText;
 
     private void Start()
     {
         _maskManager.OnMaskEquipped += MaskEquipped;
         _maskManager.OnMaskBroken += MaskBroken;
         _maskManager.OnPlayerDied += PlayerDied;
+        _statsManager.OnEnemyKilled += EnemyKilled;
         
         _text.text = "Maskless";
+    }
+
+    private void Update()
+    {
+        _maxPositionText.text = $"{_statsManager.DistanceTraveled}m";
+    }
+
+    private void EnemyKilled(int total)
+    {
+        _killCountText.text = $"Total kills: {total}";
     }
 
     private void MaskEquipped(MaskData data)

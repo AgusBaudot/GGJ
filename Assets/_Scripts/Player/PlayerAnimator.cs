@@ -48,6 +48,7 @@ public class PlayerAnimator : MonoBehaviour
         {
             _maskManager.OnMaskEquipped += OnMaskEquipped;
             _maskManager.OnMaskBroken += OnMaskBroken;
+            _maskManager.OnPlayerDied += OnPlayerDied;
             SyncMaskState();
         }
 
@@ -67,6 +68,7 @@ public class PlayerAnimator : MonoBehaviour
         {
             _maskManager.OnMaskEquipped -= OnMaskEquipped;
             _maskManager.OnMaskBroken -= OnMaskBroken;
+            _maskManager.OnPlayerDied -= OnPlayerDied;
         }
 
         _moveParticles.Stop();
@@ -151,6 +153,11 @@ public class PlayerAnimator : MonoBehaviour
             _anim.SetFloat(MaskEquippedKey, 0);
     }
 
+    private void OnPlayerDied()
+    {
+        _anim.SetTrigger(PlayerDiedKey);
+    }
+
     private void SyncMaskState()
     {
         if (_maskManager.IsMaskless())
@@ -225,4 +232,5 @@ public class PlayerAnimator : MonoBehaviour
     private static readonly int GrabAttackKey = Animator.StringToHash("GrabAttack");
     private static readonly int MaskEquippedKey = Animator.StringToHash("MaskEquipped");
     private static readonly int MaskEquippedTriggerKey = Animator.StringToHash("MaskEquippedTrigger");
+    private static readonly int PlayerDiedKey = Animator.StringToHash("Died");
 }

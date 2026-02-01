@@ -45,6 +45,12 @@ public class PlayerInput : MonoBehaviour
             FacingDirection = newInput.Move.x < 0 ? -1 : 1;
 
         // 4. Finally, save the result to the property
+        if (PauseManager.Instance.IsPlayerFrozen)
+        {
+            Debug.Log("Is this the best way to achieve this?");
+            CurrentInput = new FrameInput();
+            return;
+        }
         CurrentInput = newInput;
     }
 }

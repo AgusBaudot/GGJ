@@ -69,8 +69,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void Update()
     {
-        //Block input processing if player is in the middle of the teleport sequence
+        // Block input when teleporting, paused (menu), or when PauseManager has player frozen
         if (_isTeleportingSequence) return;
+        if (PauseManager.Instance != null && (PauseManager.Instance.IsPlayerFrozen || PauseManager.Instance.IsPaused)) return;
 
         ProcessInput();
     }
@@ -140,7 +141,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
             velocity = _burst.UpdateBurst();
             velocity.y = 0; // Keep burst horizontal
         }
-        else if (_isTeleportingSequence)
+        else if (_isTeleportingSequence || (PauseManager.Instance != null && (PauseManager.Instance.IsPlayerFrozen || PauseManager.Instance.IsPaused)))
         {
             velocity = Vector2.zero;
         }
