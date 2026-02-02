@@ -10,6 +10,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
 public class Enemy : MonoBehaviour
 {
+    [SerializeField] private AudioClip _deathAudio;
+    
     public EnemyData Data { get; private set; }
     public MaskManager MaskManager { get; private set; }
     public bool IsAlive => _currentHp > 0;
@@ -138,7 +140,8 @@ public class Enemy : MonoBehaviour
     {
         if (_stunned) return;
         NotifyAttackTriggered();
-        MaskManager.ApplyDamage(Data.ContactDmg);
+        if (Data.ContactDmg > 0)
+            MaskManager.ApplyDamage(Data.ContactDmg);
     }
 
     /// <summary>
@@ -185,6 +188,7 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator DieRoutine(EnemyAnimator enemyAnimator)
     {
+        SoundFXManager.instance.PlaySoundFXClip(_deathAudio, transform, .5f);
         enemyAnimator.TriggerDeath();
         yield return new WaitForSeconds(enemyAnimator.DeathAnimationDuration);
         _maskSpawner.SpawnPickupMask(Data.DroppedMask, transform.position);

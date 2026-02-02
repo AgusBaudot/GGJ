@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Tank enemy
   m_EditorClassIdentifier: 
   MaxHP: 5
-  ContactDmg: 1
+  ContactDmg: 0
   MoveSpeed: 2
   Behavior: 2
   DroppedMask: {fileID: 11400000, guid: de018b3fa482f8a47aef1fe0858b77ae, type: 2}
@@ -28,6 +28,7 @@ MonoBehaviour:
   AttackCooldown: 2
   BackwardsSpeed: 3
   ProjectilePrefab: {fileID: 0}
+  FireAttackWindup: 0.36
   RangedAttackData: {fileID: 0}
   DamageUponCollision: 2
   GrabWindupTime: 1
@@ -39,8 +40,10 @@ MonoBehaviour:
   ThrowForce: 20
   GrabMissCooldown: 1
   TeleportDistance: 5
+  FogAttackWindup: 1
   TeleportCooldown: 3
   TeleportDissolveDuration: 0
   TeleportReappearDuration: 0
   EnemySprite: {fileID: 2747690628134850419, guid: 16037dbd798344f57a526d53d48f5ead, type: 3}
   EnemyAnimationID: 4
+  DeathWindup: 0.24

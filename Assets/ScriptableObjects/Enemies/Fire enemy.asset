@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Fire enemy
   m_EditorClassIdentifier: 
   MaxHP: 5
-  ContactDmg: 1
+  ContactDmg: 0
   MoveSpeed: 10
   Behavior: 0
   DroppedMask: {fileID: 11400000, guid: eaa4766e3d7b0bd4a9acbd1a8dc43737, type: 2}
@@ -28,7 +28,8 @@ MonoBehaviour:
   AttackCooldown: 2
   BackwardsSpeed: 6
   ProjectilePrefab: {fileID: 4410416591188161858, guid: af2921d238db64d46bcae5dd22c388eb, type: 3}
-  RangedAttackData: {fileID: 11400000, guid: 3f3a47ec3390f8a49b115e044792d65a, type: 2}
+  FireAttackWindup: 0.36
+  RangedAttackData: {fileID: 11400000, guid: 7c55325afb10eff45848aaf4280c493e, type: 2}
   DamageUponCollision: 3
   GrabWindupTime: 1
   GrabOffset: {x: 1, y: 0.5}
@@ -39,8 +40,10 @@ MonoBehaviour:
   ThrowForce: 15
   GrabMissCooldown: 1
   TeleportDistance: 5
+  FogAttackWindup: 1
   TeleportCooldown: 3
   TeleportDissolveDuration: 0
   TeleportReappearDuration: 0
   EnemySprite: {fileID: 2747690628134850419, guid: 16037dbd798344f57a526d53d48f5ead, type: 3}
   EnemyAnimationID: 1
+  DeathWindup: 0.24

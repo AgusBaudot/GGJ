@@ -16,6 +16,13 @@ public class MaskManager : MonoBehaviour
     [SerializeField] private PlayerBaseStats _playerStats;
     [SerializeField] private SpriteRenderer _playerSprite;
 
+    [Header("AUDIO CLIPS")] 
+    [SerializeField] private AudioClip _damagedSound;
+    [SerializeField] private AudioClip _maskPickupSound;
+    [SerializeField] private AudioClip _maskBreakSound;
+    [SerializeField] private AudioClip _gameOverSound;
+    [SerializeField] private AudioSource _backgroundSource;
+
     public event Action<MaskData> OnMaskEquipped;
     public event Action OnMaskBroken;
     public event Action OnPlayerDied;
@@ -34,6 +41,8 @@ public class MaskManager : MonoBehaviour
     {
         if (_maskStack.Count >= MAX_MASK_STACK_SIZE)
             return false;
+        
+        SoundFXManager.instance.PlaySoundFXClip(_maskPickupSound, _playerSprite.transform, 1);
 
         if (CurrentMask != null)
             CurrentMask.OnBreak -= BreakCurrentMask;
@@ -52,9 +61,10 @@ public class MaskManager : MonoBehaviour
 
     public void BreakCurrentMask()
     {
-        Debug.LogError("What the hell should happen when the player breaks a mask?");
         if (CurrentMask == null)
             return;
+        
+        SoundFXManager.instance.PlaySoundFXClip(_maskBreakSound, _playerSprite.transform, 1);
         
         CurrentMask.OnBreak -= BreakCurrentMask;
         _maskStack.Pop();
@@ -65,7 +75,6 @@ public class MaskManager : MonoBehaviour
         
         CurrentMask.OnBreak += BreakCurrentMask;
         PauseManager.Instance.FreezePlayerFor(1.05f);
-        Debug.Log("Block player movement & input for mask equipping duration.");
         OnMaskEquipped?.Invoke(CurrentMask.Data);
     }
 
@@ -122,6 +131,8 @@ public class MaskManager : MonoBehaviour
     {
         if (_isInvincible)
             return;
+        
+        SoundFXManager.instance.PlaySoundFXClip(_damagedSound, _playerSprite.transform, 1);
 
         OnDamageReceived?.Invoke(amount);
         if (!IsMaskless())
@@ -129,6 +140,9 @@ public class MaskManager : MonoBehaviour
         else
         {
             Debug.LogError("Wait some time before showing all this?");
+            SoundFXManager.instance.PlaySoundFXClip(_gameOverSound, _playerSprite.transform, 1);
+            _playerSprite.transform.parent.parent.gameObject.SetActive(false);
+            _backgroundSource.Stop();
             PauseManager.Instance.FreezePlayer();
             PauseManager.Instance.SetTimeFreeze(0);
             OnPlayerDied?.Invoke();

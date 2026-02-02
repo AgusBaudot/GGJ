@@ -19,15 +19,10 @@ public class PlayerTeleport : MonoBehaviour
         _col = GetComponent<CapsuleCollider2D>();
     }
 
-    // REMOVED: Update() and BufferTeleport() are no longer needed. 
-    // The Controller determines when input happens.
-
     public bool GetTeleportTarget(int direction, out Vector2 target)
     {
         target = Vector2.zero;
 
-        // FIX: Only check if the cooldown allows it. 
-        // We removed the "hasBuffered" check because the Controller calls this explicitly.
         if (!_canTeleport) return false;
 
         Vector2 dir = new Vector2(direction, 0f);

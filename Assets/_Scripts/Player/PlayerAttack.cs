@@ -18,6 +18,12 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private Transform _projectileSpawn;
     [SerializeField] private Transform _holdAnchor;
     [SerializeField] private ArmAnimator _armAnimator;
+    [Header("AUDIO")]
+    [SerializeField] private AudioClip _fireAttack;
+    [SerializeField] private AudioClip _fogAttack;
+    [SerializeField] private AudioClip _grabAttack;
+    [SerializeField] private AudioClip _throwAttack;
+    
 
     private float _lastShotTime;
     private float _grabCooldownEndTime;
@@ -86,6 +92,11 @@ public class PlayerAttack : MonoBehaviour
         
         _lastShotTime = Time.time;
 
+        var audioClip = _maskManager.CurrentMask.Data.name == "Fire mask"
+            ? _fireAttack
+            : _fogAttack;
+        SoundFXManager.instance.PlaySoundFXClip(audioClip, transform, 1);
+        
         var projectile = Instantiate(_projectilePrefab, _projectileSpawn.position, Quaternion.identity);
         
         projectile.Init(data, Vector2.right * _input.FacingDirection);
@@ -109,6 +120,7 @@ public class PlayerAttack : MonoBehaviour
         if (enemy == null) return;
 
         GrabEnemy(enemy);
+        SoundFXManager.instance.PlaySoundFXClip(_grabAttack, transform, 1);
         AttackExecuted?.Invoke(AttackType.Grab);
     }
 
@@ -240,7 +252,7 @@ public class PlayerAttack : MonoBehaviour
         if (voluntary && _maskManager.CurrentMask != null)
         {
             var thrown = enemy.gameObject.AddComponent<ThrownEnemyController>();
-            thrown.Init((int)_maskManager.CurrentMask.Data.DmgModifier);
+            thrown.Init((int)_maskManager.CurrentMask.Data.DmgModifier, _throwAttack);
         }
 
         _grabCooldownEndTime = Time.time + _stats.GrabAttackCooldown;

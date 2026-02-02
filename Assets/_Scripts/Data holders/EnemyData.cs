@@ -41,6 +41,8 @@ public class EnemyData : ScriptableObject
     public float BackwardsSpeed = 3f;
     [Tooltip("Projectile prefab to spawn")]
     public GameObject ProjectilePrefab;
+    [Tooltip("The amount of time we wait before spawning the projectile")]
+    public float FireAttackWindup = 0.36f;
     [Tooltip("Data for the projectile stats")]
     public RangedAttackData RangedAttackData;
 
@@ -67,6 +69,8 @@ public class EnemyData : ScriptableObject
     [Header("SNEAKY SPECIFIC")]
     [Tooltip("Distance to teleport away from player")]
     public float TeleportDistance = 5f;
+    [Tooltip("The amount of time we wait before spawning the projectile")]
+    public float FogAttackWindup = 1f;
     [Tooltip("Cooldown between teleports")]
     public float TeleportCooldown = 3f;
     [Tooltip("Visual dissolve duration before teleport (optional)")]
@@ -79,6 +83,7 @@ public class EnemyData : ScriptableObject
     
     [Header("ANIMATION")]
     public int EnemyAnimationID;
+    public float DeathWindup = 0.24f;
 }
 
 public enum BehaviorType

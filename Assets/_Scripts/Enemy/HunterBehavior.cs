@@ -186,6 +186,7 @@ public class HunterBehavior : MonoBehaviour, IEnemyBehavior
         // Fire projectile toward player
         if (_projectileSpawn != null && _data.ProjectilePrefab != null)
         {
+            yield return Helpers.GetWait(_data.FireAttackWindup);
             Vector2 directionToPlayer = (_player.gameObject.GetComponent<Collider2D>().bounds.center - _projectileSpawn.position).normalized;
 
             var projectile = Instantiate(_data.ProjectilePrefab, _projectileSpawn.position, Quaternion.identity);

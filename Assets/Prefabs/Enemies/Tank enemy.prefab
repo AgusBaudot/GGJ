@@ -127,7 +127,7 @@ Animator:
   m_GameObject: {fileID: 8840854283097975714}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 43fdf3854eee467499fe1759640b3f02, type: 2}
+  m_Controller: {fileID: 9100000, guid: 245c1433df32b0a46b3c61cf700289d4, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -200,6 +200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c00687108e189994a9cd56524665e8f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _deathAudio: {fileID: 8300000, guid: 45ea256a872e2c24bafaaa8ebb5a6e5a, type: 3}
 --- !u!50 &8004364246419150105
 Rigidbody2D:
   serializedVersion: 4

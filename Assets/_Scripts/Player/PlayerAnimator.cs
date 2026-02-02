@@ -23,7 +23,7 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField] private ParticleSystem _dashParticles;
 
     [Header("Audio Clips")] [SerializeField]
-    private AudioClip[] _footsteps;
+    private AudioClip _teleportSound;
 
     private AudioSource _source;
     private IPlayerController _player;
@@ -129,6 +129,7 @@ public class PlayerAnimator : MonoBehaviour
 
     private void OnTeleportStarted()
     {
+        SoundFXManager.instance.PlaySoundFXClip(_teleportSound, transform, 0.8f);
         _anim.SetTrigger(TeleportKey);
     }
 

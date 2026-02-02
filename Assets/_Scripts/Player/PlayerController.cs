@@ -14,6 +14,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [Header("DEPENDENCIES")]
     [SerializeField] private PlayerBaseStats _stats;
     [SerializeField] private MaskManager _maskManager;
+    [SerializeField] private AudioClip _jumpSound;
+    [SerializeField] private AudioClip _dashSound;
+    [SerializeField] private AudioClip _basicAttackSound;
 
     public MaskManager MaskManager => _maskManager;
     public int GetDirection => _input.FacingDirection;
@@ -110,7 +113,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
             // Basic attack = tackle burst - fire Attacked only when burst actually starts
             if (attack == AttackType.Basic && !_burst.IsBursting && !_teleport.IsTeleporting)
             {
-                if (_burst.TryStartBurst(_stats.TackleData, GetDirection))
+                if (_burst.TryStartBurst(_stats.TackleData, GetDirection, _basicAttackSound, _dashSound))
                     Attacked?.Invoke(AttackType.Basic);
             }
         }
@@ -124,7 +127,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
                     return;
 
                 case SecondaryType.Dash:
-                    _burst.TryStartBurst(_stats.DashData, GetDirection);
+                    _burst.TryStartBurst(_stats.DashData, GetDirection, _basicAttackSound, _dashSound);
                     break;
 
                 case SecondaryType.Teleport:
@@ -283,6 +286,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void OnJumped()
     {
+        Debug.LogError("Jumped");
+        SoundFXManager.instance.PlaySoundFXClip(_jumpSound, transform, 1);
         Jumped?.Invoke();
     }
 

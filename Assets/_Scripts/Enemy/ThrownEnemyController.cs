@@ -9,14 +9,18 @@ public class ThrownEnemyController : MonoBehaviour
 {
     private int _damageAmount;
     private bool _damageApplied;
+    private AudioClip _impactSound;
 
-    public void Init(int damageAmount)
+    public void Init(int damageAmount, AudioClip audio)
     {
         _damageAmount = damageAmount;
+        _impactSound = audio;
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
+        SoundFXManager.instance.PlaySoundFXClip(_impactSound, transform, 1);
+        
         if (_damageApplied) return;
 
         var self = GetComponent<Enemy>();

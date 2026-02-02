@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Fog enemy
   m_EditorClassIdentifier: 
   MaxHP: 3
-  ContactDmg: 1
+  ContactDmg: 0
   MoveSpeed: 10
   Behavior: 3
   DroppedMask: {fileID: 11400000, guid: af1fba4a556d4a043beeb19f59965456, type: 2}
@@ -28,6 +28,7 @@ MonoBehaviour:
   AttackCooldown: 2
   BackwardsSpeed: 3
   ProjectilePrefab: {fileID: 4410416591188161858, guid: af2921d238db64d46bcae5dd22c388eb, type: 3}
+  FireAttackWindup: 0.36
   RangedAttackData: {fileID: 11400000, guid: 4b51d34c3c1fee345825ac110e94769e, type: 2}
   DamageUponCollision: 3
   GrabWindupTime: 1
@@ -39,8 +40,10 @@ MonoBehaviour:
   ThrowForce: 15
   GrabMissCooldown: 1
   TeleportDistance: 8
+  FogAttackWindup: 1
   TeleportCooldown: 3
   TeleportDissolveDuration: 0.32
   TeleportReappearDuration: 0
   EnemySprite: {fileID: 2747690628134850419, guid: 16037dbd798344f57a526d53d48f5ead, type: 3}
   EnemyAnimationID: 2
+  DeathWindup: 0.24

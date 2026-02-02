@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -137,6 +138,7 @@ public class EnemyAnimator : MonoBehaviour
     public void TriggerDeath()
     {
         _anim.SetTrigger(DieKey);
+        // yield return Helpers.GetWait(_enemy.Data.DeathWindup);
     }
 
     private static readonly int EnemyIDKey = Animator.StringToHash("EnemyType");
