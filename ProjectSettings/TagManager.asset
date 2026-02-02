@@ -14,8 +14,8 @@ TagManager:
   - Water
   - UI
   - Player
-  - 
-  - 
+  - Tank
+  - Platforms
   - 
   - 
   - 
@@ -42,4 +42,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Parallax
+    uniqueID: 4264829069
+    locked: 0
+  - name: Special_BG
+    uniqueID: 4182495113
+    locked: 0
+  - name: UI
+    uniqueID: 2741421587
     locked: 0

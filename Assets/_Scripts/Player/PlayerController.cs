@@ -67,6 +67,12 @@ public class PlayerController : MonoBehaviour, IPlayerController
         _playerAttack.AttackExecuted += type => Attacked?.Invoke(type);
     }
 
+    private void Start()
+    {
+        PauseManager.Instance.SetTimeFreeze(-1f);
+        PauseManager.Instance.UnfreezePlayer();
+    }
+
     private void Update()
     {
         // Block input when teleporting, paused (menu), or when PauseManager has player frozen

@@ -17,7 +17,7 @@ MonoBehaviour:
     m_Bits: 64
   GroundLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 264
   SnapInput: 1
   VerticalDeadZoneThreshold: 0.3
   HorizontalDeadZoneThreshold: 0.1
@@ -49,7 +49,7 @@ MonoBehaviour:
   BasicAttackSpeed: 15
   BasicAttackDuration: 2
   BasicAttackCooldown: 1
-  BasicAttackStunDuration: 0.5
+  BasicAttackStunDuration: 2
   BasicAttackBuffer: 0.2
   GrabAttackRange: 2.5
   ThrowForce: 500

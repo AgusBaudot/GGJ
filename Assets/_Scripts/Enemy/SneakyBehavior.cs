@@ -11,22 +11,26 @@ public class SneakyBehavior : MonoBehaviour, IEnemyBehavior
     private Transform _player;
     private Rigidbody2D _rb;
     private BoxCollider2D _col;
+    private PlayerBaseStats _stats;
 
     private Transform _projectileSpawn;
+    private Animator _anim;
     private bool _canShoot = true;
     private bool _canTeleport = true;
     private bool _isTeleporting;
+    private bool _teleportDisappearSignalled;
     private bool _isFacingRight = true;
     private bool _isGrounded;
     private bool _cachedQueryStartInColliders;
 
-    public void Initialize(Enemy enemy)
+    public void Initialize(Enemy enemy, PlayerBaseStats stats)
     {
         _enemy = enemy;
         _data = enemy.Data;
         _player = enemy.Player;
         _rb = enemy.Rb;
         _col = enemy.Col;
+        _stats = stats;
 
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
 
@@ -36,6 +40,19 @@ public class SneakyBehavior : MonoBehaviour, IEnemyBehavior
         {
             Debug.LogError($"[SNEAKY] No 'ProjectileSpawn' child found on {gameObject.name}! Please add one.");
         }
+
+        _anim = GetComponentInChildren<Animator>();
+        if (_anim == null)
+            Debug.LogWarning($"[SNEAKY] No Animator in children. Teleport animation will not play.");
+    }
+
+    /// <summary>
+    /// Called when the Teleport animation reaches the "disappear" frame. Use an Animation Event on the Teleport clip,
+    /// or rely on <see cref="EnemyData.TeleportDissolveDuration"/> as a timer fallback.
+    /// </summary>
+    public void OnTeleportDisappear()
+    {
+        _teleportDisappearSignalled = true;
     }
 
     public void UpdateBehavior()
@@ -129,7 +146,7 @@ public class SneakyBehavior : MonoBehaviour, IEnemyBehavior
     {
         var spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
         if (spriteRenderer)
-            spriteRenderer.flipX = !_isFacingRight;
+            spriteRenderer.flipX = _isFacingRight;
 
         // Flip the projectile spawn point
         if (_projectileSpawn)
@@ -176,35 +193,44 @@ public class SneakyBehavior : MonoBehaviour, IEnemyBehavior
     {
         // Get teleport target away from player
         int teleportDirection = _isFacingRight ? -1 : 1; // Opposite of facing (away from player)
-        
+
         if (!GetTeleportTarget(teleportDirection, out Vector2 target))
         {
-            // Failed to find valid target, start cooldown anyway
             yield return StartCoroutine(TeleportCooldown());
             yield break;
         }
 
         _isTeleporting = true;
         _canTeleport = false;
+        _teleportDisappearSignalled = false;
 
-        // Optional: Teleport dissolve duration (visual telegraph)
-        if (_data.TeleportDissolveDuration > 0)
+        // Start Teleport animation (animator must have "Teleport" trigger and a state playing the Teleport clip)
+        if (_anim != null)
+            _anim.SetTrigger(TeleportTriggerKey);
+
+        // Wait until "disappear": either Animation Event calls OnTeleportDisappear(), or timer (TeleportDissolveDuration) elapses
+        float timeout = _data.TeleportDissolveDuration > 0 ? _data.TeleportDissolveDuration : 2f;
+        float elapsed = 0f;
+        while (elapsed < timeout && !_teleportDisappearSignalled)
         {
-            yield return new WaitForSeconds(_data.TeleportDissolveDuration);
+            elapsed += Time.deltaTime;
+            yield return null;
         }
 
-        // Execute teleport
+        // Stop animation (pause), TP, then resume
+        if (_anim != null)
+            _anim.speed = 0f;
+
         ExecuteTeleport(target);
 
-        // Optional: Teleport reappear duration
+        if (_anim != null)
+            _anim.speed = 1f;
+
+        // Let reappear part of the animation play
         if (_data.TeleportReappearDuration > 0)
-        {
             yield return new WaitForSeconds(_data.TeleportReappearDuration);
-        }
 
         _isTeleporting = false;
-
-        // Start cooldown
         yield return StartCoroutine(TeleportCooldown());
     }
 
@@ -286,6 +312,8 @@ public class SneakyBehavior : MonoBehaviour, IEnemyBehavior
     }
 
     #endregion
+
+    private static readonly int TeleportTriggerKey = Animator.StringToHash("Teleport");
 
     #region Debug Visualization
 

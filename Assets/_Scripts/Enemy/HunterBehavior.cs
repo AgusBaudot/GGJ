@@ -11,6 +11,7 @@ public class HunterBehavior : MonoBehaviour, IEnemyBehavior
     private Transform _player;
     private Rigidbody2D _rb;
     private BoxCollider2D _col;
+    private PlayerBaseStats _stats;
 
     private Transform _projectileSpawn;
     private bool _canShoot = true;
@@ -19,14 +20,15 @@ public class HunterBehavior : MonoBehaviour, IEnemyBehavior
     private bool _ledgeDetected;
     private bool _cachedQueryStartInColliders;
 
-    public void Initialize(Enemy enemy)
+    public void Initialize(Enemy enemy, PlayerBaseStats stats)
     {
         _enemy = enemy;
         _data = enemy.Data;
         _player = enemy.Player;
         _rb = enemy.Rb;
         _col = enemy.Col;
-
+        _stats = stats;
+        
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
 
         // Get or create projectile spawn point
@@ -91,7 +93,7 @@ public class HunterBehavior : MonoBehaviour, IEnemyBehavior
             0f,
             Vector2.down,
             0.1f,
-            LayerMask.GetMask("Ground")
+            _stats.GroundLayers
         );
 
         _isGrounded = groundHit;
@@ -147,7 +149,7 @@ public class HunterBehavior : MonoBehaviour, IEnemyBehavior
         // Flip the sprite
         var spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
         if (spriteRenderer)
-            spriteRenderer.flipX = !_isFacingRight;
+            spriteRenderer.flipX =  _isFacingRight;
 
         // Flip the projectile spawn point
         if (_projectileSpawn)

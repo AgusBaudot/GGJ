@@ -22,6 +22,7 @@ public class MaskManager : MonoBehaviour
     public event Action<int> OnDamageReceived;
 
     public bool IsInvincible => _isInvincible;
+    public int CurrentHP => IsMaskless() ? 1 : CurrentMask.HP;
     public MaskInstance CurrentMask =>
         _maskStack.Count > 0 ? _maskStack.Peek() : null;
 
@@ -127,8 +128,9 @@ public class MaskManager : MonoBehaviour
             CurrentMask.TakeDamage(amount);
         else
         {
+            Debug.LogError("Wait some time before showing all this?");
             PauseManager.Instance.FreezePlayer();
-            Debug.LogError("Should we freeze whole game aswell? Or just player?");
+            PauseManager.Instance.SetTimeFreeze(0);
             OnPlayerDied?.Invoke();
         }
 

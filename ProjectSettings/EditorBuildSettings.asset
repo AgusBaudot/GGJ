@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Gym.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
@@ -17,16 +17,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Credits.unity
     guid: b7cdce1dcd300774ca4412b01c4026b1
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Audio and Video.unity
     guid: 77c5230b6dd1ddb4c85375b9ae40cce3
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/GameOver.unity
     guid: 92e43f6a04f389c429f903d11e6e3d12
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Exit Confirmation.unity
     guid: 8bc7a413aaa4b0b4c8f30760ded9adc5
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Pause.unity
     guid: 594337057ceb7aa4781f0ebab4ee084b
   - enabled: 1

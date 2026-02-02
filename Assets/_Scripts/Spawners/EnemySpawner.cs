@@ -21,6 +21,7 @@ public class EnemySpawner : MonoBehaviour
     [Header("References")]
     [SerializeField] private MaskManager _maskManager;
     [SerializeField] private MaskSpawner _maskSpawner;
+    [SerializeField] private PlayerBaseStats _stats;
 
     [Header("Enemy config (prefab + data per type)")]
     [SerializeField] private EnemySpawnEntry[] _enemyEntries;
@@ -114,10 +115,10 @@ public class EnemySpawner : MonoBehaviour
                 );
             }
 
-            GameObject go = Instantiate(entry.EnemyPrefab, position, Quaternion.identity, chunkRoot.transform);
+            GameObject go = Instantiate(entry.EnemyPrefab, new Vector2(position.x, _overflowOffsetMax.y), Quaternion.identity, chunkRoot.transform);
             Enemy enemy = go.GetComponent<Enemy>();
             if (enemy != null)
-                enemy.Init(_maskManager, _maskSpawner, entry.EnemyData);
+                enemy.Init(_maskManager, _maskSpawner, entry.EnemyData, _stats);
         }
     }
 

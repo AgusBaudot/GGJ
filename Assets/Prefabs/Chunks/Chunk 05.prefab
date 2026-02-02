@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5506303508798327326}
   - component: {fileID: 3332710737308614640}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4442439834257915868}
   - component: {fileID: 4442439834257915869}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Mid platform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -153,7 +153,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4442439834423349283}
   - component: {fileID: 4442439834423349292}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -435,7 +435,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7639643790111544221}
   - component: {fileID: 1940713116164081611}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Large platform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -584,7 +584,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6024616554835481685}
   - component: {fileID: 6024616554835481684}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -668,7 +668,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6024616555155887863}
   - component: {fileID: 6024616555155887862}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Mid platform (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -727,7 +727,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6024616555578018499}
   - component: {fileID: 6024616555578018498}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Large platform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -786,7 +786,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6024616555994512275}
   - component: {fileID: 6024616555994512274}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}

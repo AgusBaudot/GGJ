@@ -4,7 +4,7 @@
 
 public interface IEnemyBehavior
 {
-    void Initialize(Enemy enemy);
+    void Initialize(Enemy enemy, PlayerBaseStats stats);
     void UpdateBehavior();
     void FixedUpdateBehavior();
     void OnStunned();

@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// UI Manager will be in charge of every UI and communicate with other managers.
@@ -7,17 +8,24 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
+    [Header("DEPENDENCIES")]
     [SerializeField] private MaskManager _maskManager;
     [SerializeField] private StatsManager _statsManager;
+    [Header("TEXTS")]
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private TextMeshProUGUI _maxPositionText;
     [SerializeField] private TextMeshProUGUI _killCountText;
+    [Header("HUD")]
+    [SerializeField] private Image _healthBar;
+    [SerializeField] private Sprite[] _healthBarSprites;
+    [SerializeField] private GameObject _deathUI;
 
     private void Start()
     {
         _maskManager.OnMaskEquipped += MaskEquipped;
         _maskManager.OnMaskBroken += MaskBroken;
         _maskManager.OnPlayerDied += PlayerDied;
+        _maskManager.OnDamageReceived += UpdateHealthBar;
         _statsManager.OnEnemyKilled += EnemyKilled;
         
         _text.text = "Maskless";
@@ -37,17 +45,25 @@ public class UIManager : MonoBehaviour
     {
         //Should show every mask IN ORDER, not only last one.
         _text.text = data.name;
+        UpdateHealthBar();
     }
 
     private void MaskBroken()
     {
-        //When mask breaks player isn't automatically maskless, script should request new current mask and set maskless state only if CurrentMask = null;
         _text.text = "Maskless";
+        UpdateHealthBar();
+    }
+
+    private void UpdateHealthBar(int hpLeft = 0)
+    {
+        Debug.Log(_maskManager.CurrentHP);
+        _healthBar.sprite = _healthBarSprites[_maskManager.CurrentHP];
     }
 
     private void PlayerDied()
     {
-        _text.text = "Player is dead";
+        _text.text = "Game over";
+        _deathUI.SetActive(true);
     }
 
     private void OnDestroy()

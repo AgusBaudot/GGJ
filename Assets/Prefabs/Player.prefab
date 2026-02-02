@@ -42,8 +42,9 @@ GameObject:
   - component: {fileID: 945888117}
   - component: {fileID: 945888119}
   - component: {fileID: 945888118}
+  - component: {fileID: 945888120}
   m_Layer: 6
-  m_Name: Arm sprite
+  m_Name: Arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57,7 +58,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 945888116}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.75, y: 1, z: 0}
+  m_LocalPosition: {x: 0.5, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -137,6 +138,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &945888120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 945888116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a414ff25a4c4f764c8b545bb69fe9ab5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerAttack: {fileID: 7961592145214805890}
 --- !u!1 &7961592144486146720
 GameObject:
   m_ObjectHideFlags: 0
@@ -14885,6 +14899,7 @@ MonoBehaviour:
   _projectilePrefab: {fileID: 7986571306740652339, guid: 2248ecb149754ea4fa9311147ac91577, type: 3}
   _projectileSpawn: {fileID: 7961592144898100078}
   _holdAnchor: {fileID: 595174140}
+  _armAnimator: {fileID: 945888120}
 --- !u!50 &7961592145214805888
 Rigidbody2D:
   serializedVersion: 4
@@ -19931,7 +19946,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: bf29468eab3354d4882435bc605dce7f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -29791,6 +29806,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _anim: {fileID: 7961592145372915264}
+  _armAnim: {fileID: 945888120}
   _sprite: {fileID: 7961592145372915267}
   _maskManager: {fileID: 0}
   _projectileSpawnpoint: {fileID: 7961592144898100078}

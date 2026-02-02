@@ -1,65 +1,38 @@
 using UnityEngine;
-using UnityEngine.UI;
+
+[System.Serializable]
+public class BackgroundElement
+{
+    public SpriteRenderer backgroundSprite;
+    [Range(0f, 1f)] public float scrollSpeed;
+    [HideInInspector] public Material spriteMaterial;
+}
 
 public class Parallax : MonoBehaviour
 {
-    Transform cam;
-    Vector3 camStartPos;
-    float distance;
+    private const float SCROLL_MULTIPLIER = 0.02f;
 
-    GameObject[] backgrounds;
-    Material[] mat;
-    float[] backSpeed;
+    [SerializeField] private BackgroundElement[] backgroundElements;
+    private Transform cam;
 
-    float farthestBack;
-
-    [Range(0.01f, 1f)]
-    public float parallaxSpeed;
-
-    void Start()
+    private void Start()
     {
         cam = Camera.main.transform;
-        camStartPos = cam.position;
 
-        int backCount = transform.childCount;
-        mat = new Material[backCount];
-        backSpeed = new float[backCount];
-        backgrounds = new GameObject[backCount];
-
-        for (int i = 0; i < backCount; i++)
+        foreach (var element in backgroundElements)
         {
-            backgrounds[i] = transform.GetChild(i).gameObject;
-            mat[i] = backgrounds[i].GetComponent<Renderer>().material;
-        }
-
-        BackSpeedCalculate(backCount);
-    }
-
-    void BackSpeedCalculate(int backCount)
-    {
-        for (int i = 0; i < backCount; i++) 
-        {
-            if ((backgrounds[i].transform.position.z - cam.position.z) > farthestBack)
-            {
-                farthestBack = backgrounds[i].transform.position.z - cam.position.z;
-            }
-        }
-
-        for (int i = 0; i < backCount; i++) 
-        {
-            backSpeed[i] = 1 - (backgrounds[i].transform.position.z - cam.position.z) / farthestBack;
+            element.spriteMaterial = element.backgroundSprite.material;
         }
     }
 
-    private void LateUpdate()
+    private void Update()
     {
-        distance = cam.position.x - camStartPos.x;
-        transform.position = new Vector3(cam.position.x - 1, transform.position.y, 1f);
+        float camX = cam.position.x;
 
-        for (int i = 0; i < backgrounds.Length; i++)
+        foreach (var element in backgroundElements)
         {
-            float speed = backSpeed[i] * parallaxSpeed;
-            mat[i].SetTextureOffset("_MainTex", new Vector2(distance, 0) * speed);
+            element.spriteMaterial.mainTextureOffset =
+                new Vector2(camX * element.scrollSpeed * SCROLL_MULTIPLIER, 0f);
         }
     }
 }

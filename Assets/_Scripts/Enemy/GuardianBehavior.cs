@@ -16,6 +16,7 @@ public class GuardianBehavior : MonoBehaviour, IEnemyBehavior
     private Collider2D _playerCollider;
     private PlayerInput _playerInput;
     private MaskManager _maskManager;
+    private PlayerBaseStats _stats;
 
     private Transform _holdAnchor;
     private bool _isGrounded;
@@ -26,13 +27,14 @@ public class GuardianBehavior : MonoBehaviour, IEnemyBehavior
     private Vector2 _grabDirection;
     private bool _cachedQueryStartInColliders;
 
-    public void Initialize(Enemy enemy)
+    public void Initialize(Enemy enemy, PlayerBaseStats stats)
     {
         _enemy = enemy;
         _data = enemy.Data;
         _player = enemy.Player;
         _rb = enemy.Rb;
         _col = enemy.Col;
+        _stats = stats;
 
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
 
@@ -121,7 +123,7 @@ public class GuardianBehavior : MonoBehaviour, IEnemyBehavior
             0f,
             Vector2.down,
             0.1f,
-            LayerMask.GetMask("Ground")
+            _stats.GroundLayers
         );
 
         _isGrounded = groundHit;

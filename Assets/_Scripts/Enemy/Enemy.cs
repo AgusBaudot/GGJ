@@ -45,7 +45,7 @@ public class Enemy : MonoBehaviour
     // Behavior component
     private IEnemyBehavior _behavior;
 
-    public void Init(MaskManager manager, MaskSpawner spawner, EnemyData data)
+    public void Init(MaskManager manager, MaskSpawner spawner, EnemyData data, PlayerBaseStats stats)
     {
         Data = data;
         MaskManager = manager;
@@ -64,10 +64,10 @@ public class Enemy : MonoBehaviour
             Debug.LogError("Player not found! Make sure Player has 'Player' tag.");
 
         // Initialize behavior based on type
-        InitializeBehavior();
+        InitializeBehavior(stats);
     }
 
-    private void InitializeBehavior()
+    private void InitializeBehavior(PlayerBaseStats stats)
     {
         switch (Data.Behavior)
         {
@@ -85,7 +85,7 @@ public class Enemy : MonoBehaviour
                 break;
         }
 
-        _behavior?.Initialize(this);
+        _behavior?.Initialize(this, stats);
     }
 
     private void Update()

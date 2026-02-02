@@ -10,6 +10,7 @@ public class MaskInstance
     public event Action OnBreak;
     
     public MaskData Data { get; }
+    public int HP => _currentHP;
 
     private int _currentHP;
     private bool _isBroken;

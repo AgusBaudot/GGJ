@@ -157,6 +157,7 @@ public class PlayerAnimator : MonoBehaviour
 
     private void OnPlayerDied()
     {
+        _anim.updateMode = AnimatorUpdateMode.UnscaledTime;
         _anim.SetTrigger(PlayerDiedKey);
     }
 
@@ -196,8 +197,8 @@ public class PlayerAnimator : MonoBehaviour
             SetColor(_landParticles);
 
             // _anim.SetBool(GroundedKey, grounded);
-            _source.PlayOneShot(_footsteps[Random.Range(0, _footsteps.Length)]);
-            _moveParticles.Play();
+            // _source.PlayOneShot(_footsteps[Random.Range(0, _footsteps.Length)]);
+            // _moveParticles.Play();
 
             _landParticles.transform.localScale = Vector3.one * Mathf.InverseLerp(0, 40, impact);
             _landParticles.Play();

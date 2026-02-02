@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -24,7 +25,15 @@ public class EnemyAnimator : MonoBehaviour
     {
         _enemy = GetComponentInParent<Enemy>();
         _anim = GetComponent<Animator>();
+        
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
+    }
+
+    private void Start()
+    {
+        Debug.Log(_enemy.Data.name);
+        
+        _anim.SetFloat(EnemyIDKey, _enemy.Data.EnemyAnimationID);
     }
 
     private void OnEnable()
@@ -86,6 +95,11 @@ public class EnemyAnimator : MonoBehaviour
         Physics2D.queriesStartInColliders = _cachedQueryStartInColliders;
     }
 
+    public void Jumped()
+    {
+        _anim.SetTrigger(JumpKey);
+    }
+
     private void TriggerAttack()
     {
         _anim.SetTrigger(AttackKey);
@@ -125,8 +139,10 @@ public class EnemyAnimator : MonoBehaviour
         _anim.SetTrigger(DieKey);
     }
 
+    private static readonly int EnemyIDKey = Animator.StringToHash("EnemyType");
     private static readonly int IdleKey = Animator.StringToHash("Idle");
     private static readonly int WalkingKey = Animator.StringToHash("Walking");
+    private static readonly int JumpKey = Animator.StringToHash("Jump");
     private static readonly int GroundedKey = Animator.StringToHash("Grounded");
     private static readonly int AttackKey = Animator.StringToHash("Attack");
     private static readonly int DieKey = Animator.StringToHash("Die");

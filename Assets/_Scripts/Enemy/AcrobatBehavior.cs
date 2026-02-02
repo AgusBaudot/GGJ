@@ -7,16 +7,17 @@ using UnityEngine;
 public class AcrobatBehavior : MonoBehaviour, IEnemyBehavior
 {
     [Header("Debug Settings")]
-    [SerializeField] private bool _enableDebugLogs = true;
-    [SerializeField] private bool _enableDebugGizmos = true;
-    [SerializeField] private bool _showGroundCheck = true;
-    [SerializeField] private bool _showStateInfo = true;
+    [SerializeField] private bool _enableDebugLogs;
+    [SerializeField] private bool _enableDebugGizmos;
+    [SerializeField] private bool _showGroundCheck;
+    [SerializeField] private bool _showStateInfo;
 
     private Enemy _enemy;
     private EnemyData _data;
     private Transform _player;
     private Rigidbody2D _rb;
     private BoxCollider2D _col;
+    private PlayerBaseStats _stats;
 
     private bool _isGrounded;
     private bool _isDashing;
@@ -33,13 +34,14 @@ public class AcrobatBehavior : MonoBehaviour, IEnemyBehavior
     private int _dashCount = 0;
     private int _retreatCount = 0;
 
-    public void Initialize(Enemy enemy)
+    public void Initialize(Enemy enemy, PlayerBaseStats stats)
     {
         _enemy = enemy;
         _data = enemy.Data;
         _player = enemy.Player;
         _rb = enemy.Rb;
         _col = enemy.Col;
+        _stats = stats;
 
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
 
@@ -148,7 +150,7 @@ public class AcrobatBehavior : MonoBehaviour, IEnemyBehavior
             0f,
             Vector2.down,
             0.1f, // Small distance below collider
-            LayerMask.GetMask("Ground")
+            _stats.GroundLayers
         );
 
         bool wasGrounded = _isGrounded;
@@ -182,6 +184,7 @@ public class AcrobatBehavior : MonoBehaviour, IEnemyBehavior
         {
             _hopCount++;
             _rb.velocity = new Vector2(0, _data.JumpForce);
+            GetComponentInChildren<EnemyAnimator>().Jumped();
             
             if (_enableDebugLogs)
                 Debug.Log($"<color=gray>[ACROBAT]</color> IDLE HOP #{_hopCount} | JumpForce: {_data.JumpForce}");
