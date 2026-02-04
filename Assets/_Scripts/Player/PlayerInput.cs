@@ -17,7 +17,14 @@ public class PlayerInput : MonoBehaviour
 
     private void GatherInput()
     {
-        // 1. Create a local variable
+        // 1. Check frozen input.
+        if (PauseManager.Instance.IsPlayerFrozen)
+        {
+            CurrentInput = new FrameInput();
+            return;
+        }
+        
+        // 2. Create a local variable
         var newInput = new FrameInput
         {
             JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C),
@@ -29,7 +36,7 @@ public class PlayerInput : MonoBehaviour
             SecondaryDown = Input.GetButtonDown("Secondary") || Input.GetKeyDown(KeyCode.K)
         };
 
-        // 2. Modify the local variable
+        // 3. Modify the local variable
         if (_stats.SnapInput)
         {
             newInput.Move.x = Mathf.Abs(newInput.Move.x) < _stats.HorizontalDeadZoneThreshold
@@ -40,17 +47,11 @@ public class PlayerInput : MonoBehaviour
                 : Mathf.Sign(newInput.Move.y);
         }
 
-        // 3. Use the local variable for logic checks
+        // 4. Update logic
         if (newInput.Move.x != 0)
             FacingDirection = newInput.Move.x < 0 ? -1 : 1;
 
-        // 4. Finally, save the result to the property
-        if (PauseManager.Instance.IsPlayerFrozen)
-        {
-            Debug.Log("Is this the best way to achieve this?");
-            CurrentInput = new FrameInput();
-            return;
-        }
+        // 5. Assign
         CurrentInput = newInput;
     }
 }

@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private bool _grounded;
     private bool _cachedQueryStartInColliders;
     private bool _isTeleportingSequence; //Locks input and physics during the animation.
-    private float _frameLeftGrounded = float.MinValue;
+    // private float _frameLeftGrounded = float.MinValue;
     private MaskPickup _nearbyMask;
 
     #region Interface

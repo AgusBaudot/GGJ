@@ -68,9 +68,13 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            SoundFXManager.Instance.PlayLoop(_globalSounds.PlayerWalk, transform);
             _velocity.x = Mathf.MoveTowards(_velocity.x, horizontalInput * _stats.MaxSpeed,
                 _stats.Acceleration * Time.fixedDeltaTime);
+            if (_isGrounded)
+                SoundFXManager.Instance.PlayLoop(_globalSounds.PlayerWalk, transform);
+            else
+                SoundFXManager.Instance.StopLoop(transform);
+                
         }
     }
 

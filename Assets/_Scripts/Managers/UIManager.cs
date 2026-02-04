@@ -50,15 +50,13 @@ public class UIManager : MonoBehaviour
 
     private void MaskBroken()
     {
-        _text.text = "Maskless";
+        if (_maskManager.IsMaskless())
+            _text.text = "Maskless";
         UpdateHealthBar();
     }
 
-    private void UpdateHealthBar(int hpLeft = 0)
-    {
-        Debug.Log(_maskManager.CurrentHP);
+    private void UpdateHealthBar(int hpLeft = 0) =>
         _healthBar.sprite = _healthBarSprites[_maskManager.CurrentHP];
-    }
 
     private void PlayerDied()
     {

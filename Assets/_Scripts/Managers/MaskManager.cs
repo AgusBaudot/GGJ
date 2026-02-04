@@ -29,8 +29,10 @@ public class MaskManager : MonoBehaviour
 
     public bool IsInvincible => _isInvincible;
     public int CurrentHP => IsMaskless() ? 1 : CurrentMask.HP;
-    public MaskInstance CurrentMask =>
-        _maskStack.Count > 0 ? _maskStack.Peek() : _masklessInstance;
+    public MaskInstance CurrentMask => 
+        _maskStack.Count > 0 
+            ? _maskStack.Peek() 
+            : (_masklessInstance ??= new MaskInstance(_masklessData));
 
     private Stack<MaskInstance> _maskStack = new();
     private bool _isInvincible;
@@ -39,7 +41,6 @@ public class MaskManager : MonoBehaviour
 
     private void Start()
     {
-        _masklessInstance = new MaskInstance(_masklessData);
         SoundFXManager.Instance.PlayLoop(_globalSounds.Playing, transform);
     }
 
@@ -113,7 +114,6 @@ public class MaskManager : MonoBehaviour
         
         SoundFXManager.Instance.Play(_globalSounds.PlayerHit, _playerSprite.transform);
 
-        OnDamageReceived?.Invoke(amount);
         if (!IsMaskless())
             CurrentMask.TakeDamage(amount);
         else
@@ -125,7 +125,10 @@ public class MaskManager : MonoBehaviour
             PauseManager.Instance.SetTimeFreeze(0);
             _playerSprite.transform.parent.parent.gameObject.SetActive(false);
             OnPlayerDied?.Invoke();
+            return;
         }
+        
+        OnDamageReceived?.Invoke(amount);
 
         StartInvincibility();
     }

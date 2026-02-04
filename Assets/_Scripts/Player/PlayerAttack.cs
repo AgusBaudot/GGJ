@@ -252,6 +252,9 @@ public class PlayerAttack : MonoBehaviour
             thrown.Init((int)_maskManager.CurrentMask.Data.DmgModifier, _globalSounds);
         }
 
+        if (!voluntary)
+            enemy.RemoveStun();
+        
         _grabCooldownEndTime = Time.time + _stats.GrabAttackCooldown;
     }
 

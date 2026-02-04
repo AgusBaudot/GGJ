@@ -3,13 +3,14 @@ using System.Collections.Generic;
 
 public class MenuManager : MonoBehaviour
 {
-    [Header("Menus")]
+    [Header("AUDIO")]
+    [SerializeField] private GlobalSoundsData _globalSounds;
+    [Header("MENUS")]
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject optionsMenu;
     [SerializeField] private GameObject audioVideoMenu;
     [SerializeField] private GameObject confirmExitMenu;
     [SerializeField] private GameObject controlsMenu;
-
 
     private GameObject currentMenu;
     private Stack<GameObject> menuStack = new Stack<GameObject>();
@@ -33,6 +34,8 @@ public class MenuManager : MonoBehaviour
 
     public void OpenMenu(GameObject menu)
     {
+        SoundFXManager.Instance.Play(_globalSounds.ButtonClick, transform);
+        
         if (currentMenu != null)
         {
             menuStack.Push(currentMenu);
@@ -53,6 +56,8 @@ public class MenuManager : MonoBehaviour
 
     public void Back()
     {
+        SoundFXManager.Instance.Play(_globalSounds.ButtonClick, transform);
+        
         if (currentMenu != null)
             currentMenu.SetActive(false);
 

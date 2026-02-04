@@ -30,12 +30,7 @@ public class EnemyAnimator : MonoBehaviour
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
     }
 
-    private void Start()
-    {
-        Debug.Log(_enemy.Data.name);
-        
-        _anim.SetFloat(EnemyIDKey, _enemy.Data.EnemyAnimationID);
-    }
+    private void Start() => _anim.SetFloat(EnemyIDKey, _enemy.Data.EnemyAnimationID);
 
     private void OnEnable()
     {

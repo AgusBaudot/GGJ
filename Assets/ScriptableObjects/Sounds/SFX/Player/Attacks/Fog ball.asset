@@ -16,6 +16,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 3402799ad892f8e4bb2ea68fe5c4129e, type: 3}
   Volume: 1
   Loop: 0
-  Pitch: 1
+  Pitch: 0.532
   RandomPitch: 0
   PitchRange: {x: 0.9, y: 1.1}
