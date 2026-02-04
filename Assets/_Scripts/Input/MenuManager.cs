@@ -20,10 +20,12 @@ public class MenuManager : MonoBehaviour
         {
             if (currentMenu == null)
             {
+                Cursor.visible = true;
                 OpenMenu(pauseMenu);
             }
             else
             {
+                Cursor.visible = false;
                 Back();
             }
         }
@@ -45,6 +47,8 @@ public class MenuManager : MonoBehaviour
             PauseManager.Instance.SetPauseMenuActive(true);
         else
             Time.timeScale = 0f;
+
+        Cursor.visible = currentMenu != null;
     }
 
     public void Back()
@@ -59,7 +63,10 @@ public class MenuManager : MonoBehaviour
             PauseManager.Instance.SetPauseMenuActive(false);
         else
             Time.timeScale = 1f;
+
+        Cursor.visible = currentMenu != null;
     }
+    
     public void OpenOptions() => OpenMenu(optionsMenu);
     public void OpenAudioVideo() => OpenMenu(audioVideoMenu);
     public void OpenConfirmExit() => OpenMenu(confirmExitMenu);

@@ -7,6 +7,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private PlayerBaseStats _stats;
+    [SerializeField] private GlobalSoundsData _globalSounds;
 
     private Rigidbody2D _rb;
     private Vector2 _velocity;
@@ -14,12 +15,9 @@ public class PlayerMovement : MonoBehaviour
     private bool _endedJumpEarly;
     private bool _isControlLocked; // For burst/teleport
 
-    private AudioSource _source;
-
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
-        _source = GetComponent<AudioSource>();
     }
 
     public void SetGrounded(bool grounded)
@@ -64,15 +62,13 @@ public class PlayerMovement : MonoBehaviour
     {
         if (horizontalInput == 0)
         {
-            _source.Stop();
-            _source = GetComponent<AudioSource>();
+            SoundFXManager.Instance.StopLoop(transform);
             var deceleration = _isGrounded ? _stats.GroundDeceleration : _stats.AirDeceleration;
             _velocity.x = Mathf.MoveTowards(_velocity.x, 0, deceleration * Time.fixedDeltaTime);
         }
         else
         {
-            if (!_source.isPlaying)
-                _source.Play();
+            SoundFXManager.Instance.PlayLoop(_globalSounds.PlayerWalk, transform);
             _velocity.x = Mathf.MoveTowards(_velocity.x, horizontalInput * _stats.MaxSpeed,
                 _stats.Acceleration * Time.fixedDeltaTime);
         }

@@ -460,15 +460,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3458238720013399254, guid: 9c34a04e5beb6674fb095b52d135ef4f, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.73
+      value: 0.7300001
       objectReference: {fileID: 0}
     - target: {fileID: 5608207315882197304, guid: 9c34a04e5beb6674fb095b52d135ef4f, type: 3}
       propertyPath: m_Size.x
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 5608207315882197304, guid: 9c34a04e5beb6674fb095b52d135ef4f, type: 3}
       propertyPath: m_Size.y
-      value: 1.5
+      value: 1.6
       objectReference: {fileID: 0}
     - target: {fileID: 5608207315882197304, guid: 9c34a04e5beb6674fb095b52d135ef4f, type: 3}
       propertyPath: m_DrawMode

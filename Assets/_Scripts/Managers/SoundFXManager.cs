@@ -1,52 +1,76 @@
 using UnityEngine;
+using System.Collections.Generic;
+using Unity.Mathematics;
+using Random = UnityEngine.Random;
 
 public class SoundFXManager : MonoBehaviour
 {
-    public static SoundFXManager instance;
+    public static SoundFXManager Instance;
 
-    [SerializeField] private AudioSource soundFXObject;
+    [SerializeField] private AudioSource _soundFXPrefab;
+    
+    //Track looping sounds per owner
+    private Dictionary<Object, AudioSource> _loopingSources = new();
 
     private void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-        }
+        if (!Instance)
+            Instance = this;
         else
-        {
             Destroy(gameObject);
-        }
     }
 
-    public void PlaySoundFXClip(AudioClip audioClip, Transform spawnTransform, float volume)
+    /// <summary>
+    /// Plays one shot sounds
+    /// </summary>
+    /// <param name="sound"></param>
+    /// <param name="spawnTransform"></param>
+    public void Play(SoundFXData sound, Transform spawnTransform)
     {
-        AudioSource audioSource = Instantiate(
-            soundFXObject,
-            spawnTransform.position,
-            Quaternion.identity
-        );
+        if (sound == null || sound.clips.Length == 0)
+            return;
 
-        audioSource.clip = audioClip;
-        audioSource.volume = volume;
-        audioSource.Play();
+        AudioSource source = Instantiate(_soundFXPrefab, spawnTransform.position, Quaternion.identity);
 
-        Destroy(audioSource.gameObject, audioClip.length);
+        ConfigureSource(source, sound);
+        source.Play();
+        
+        if (!sound.Loop)
+            Destroy(source.gameObject, source.clip.length);
+    }
+    
+    //Looping start.
+    public void PlayLoop(SoundFXData sound, Transform owner)
+    {
+        if (_loopingSources.ContainsKey(owner))
+            return;
+
+        AudioSource source = Instantiate(_soundFXPrefab, owner.position, Quaternion.identity);
+
+        ConfigureSource(source, sound);
+        source.loop = true;
+        source.Play();
+        
+        _loopingSources.Add(owner, source);
+    }
+    
+    //Looping stop.
+    public void StopLoop(Transform owner)
+    {
+        if (!_loopingSources.TryGetValue(owner, out AudioSource source))
+            return;
+        
+        Destroy(source.gameObject);
+        _loopingSources.Remove(owner);
     }
 
-        public void PlayRandomSoundFXClip(AudioClip[] audioClip, Transform spawnTransform, float volume)
+    private void ConfigureSource(AudioSource source, SoundFXData sound)
     {
-        int rand = Random.Range(0, audioClip.Length);
+        source.clip = sound.clips[Random.Range(0, sound.clips.Length)];
+        source.volume = sound.Volume;
 
-        AudioSource audioSource = Instantiate(
-            soundFXObject,
-            spawnTransform.position,
-            Quaternion.identity
-        );
-
-        audioSource.clip = audioClip[rand];
-        audioSource.volume = volume;
-        audioSource.Play();
-
-        Destroy(audioSource.gameObject, audioClip.Length);
+        source.pitch = sound.RandomPitch
+            ? Random.Range(sound.PitchRange.x, sound.PitchRange.y)
+            : sound.Pitch;
     }
 }

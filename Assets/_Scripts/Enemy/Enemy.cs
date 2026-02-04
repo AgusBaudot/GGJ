@@ -10,7 +10,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private AudioClip _deathAudio;
+    [SerializeField] private GlobalSoundsData _globalSounds;
     
     public EnemyData Data { get; private set; }
     public MaskManager MaskManager { get; private set; }
@@ -188,7 +188,7 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator DieRoutine(EnemyAnimator enemyAnimator)
     {
-        SoundFXManager.instance.PlaySoundFXClip(_deathAudio, transform, .5f);
+        SoundFXManager.Instance.Play(_globalSounds.EnemyDeath, transform);
         enemyAnimator.TriggerDeath();
         yield return new WaitForSeconds(enemyAnimator.DeathAnimationDuration);
         _maskSpawner.SpawnPickupMask(Data.DroppedMask, transform.position);

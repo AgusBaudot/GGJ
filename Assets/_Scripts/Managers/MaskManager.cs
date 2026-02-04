@@ -12,16 +12,15 @@ public class MaskManager : MonoBehaviour
 {
     private const int MAX_MASK_STACK_SIZE = 3;
 
+    [Header("MASKLESS STATE")] [SerializeField]
+    private MaskData _masklessData;
+    
     [Header("INVINCIBILITY")]
     [SerializeField] private PlayerBaseStats _playerStats;
     [SerializeField] private SpriteRenderer _playerSprite;
 
     [Header("AUDIO CLIPS")] 
-    [SerializeField] private AudioClip _damagedSound;
-    [SerializeField] private AudioClip _maskPickupSound;
-    [SerializeField] private AudioClip _maskBreakSound;
-    [SerializeField] private AudioClip _gameOverSound;
-    [SerializeField] private AudioSource _backgroundSource;
+        [SerializeField] GlobalSoundsData _globalSounds;
 
     public event Action<MaskData> OnMaskEquipped;
     public event Action OnMaskBroken;
@@ -31,20 +30,27 @@ public class MaskManager : MonoBehaviour
     public bool IsInvincible => _isInvincible;
     public int CurrentHP => IsMaskless() ? 1 : CurrentMask.HP;
     public MaskInstance CurrentMask =>
-        _maskStack.Count > 0 ? _maskStack.Peek() : null;
+        _maskStack.Count > 0 ? _maskStack.Peek() : _masklessInstance;
 
     private Stack<MaskInstance> _maskStack = new();
     private bool _isInvincible;
     private Coroutine _invincibilityRoutine;
+    private MaskInstance _masklessInstance;
+
+    private void Start()
+    {
+        _masklessInstance = new MaskInstance(_masklessData);
+        SoundFXManager.Instance.PlayLoop(_globalSounds.Playing, transform);
+    }
 
     public bool AddMaskToStack(MaskData maskData)
     {
         if (_maskStack.Count >= MAX_MASK_STACK_SIZE)
             return false;
         
-        SoundFXManager.instance.PlaySoundFXClip(_maskPickupSound, _playerSprite.transform, 1);
+        SoundFXManager.Instance.Play(_globalSounds.PlayerEquipMask, _playerSprite.transform);
 
-        if (CurrentMask != null)
+        if (_maskStack.Count > 0)
             CurrentMask.OnBreak -= BreakCurrentMask;
 
         var maskInstance = new MaskInstance(maskData);
@@ -61,90 +67,63 @@ public class MaskManager : MonoBehaviour
 
     public void BreakCurrentMask()
     {
-        if (CurrentMask == null)
+        if (_maskStack.Count == 0)
             return;
         
-        SoundFXManager.instance.PlaySoundFXClip(_maskBreakSound, _playerSprite.transform, 1);
+        SoundFXManager.Instance.Play(_globalSounds.PlayerBreakMask, _playerSprite.transform);
         
         CurrentMask.OnBreak -= BreakCurrentMask;
         _maskStack.Pop();
         
         OnMaskBroken?.Invoke();
 
-        if (CurrentMask == null) return;
-        
+        if (_maskStack.Count == 0)
+            return;
+
         CurrentMask.OnBreak += BreakCurrentMask;
         PauseManager.Instance.FreezePlayerFor(1.05f);
         OnMaskEquipped?.Invoke(CurrentMask.Data);
     }
 
-    public bool IsMaskless() => CurrentMask == null;
+    public bool IsMaskless() => CurrentMask == _masklessInstance;
 
     #region Attack and secondary type getters
-    //What happens when player wants to attack and/or presses secondary button while maskless?
-    public AttackType GetCurrentAttack()
-    {
-        return CurrentMask != null
-            ? CurrentMask.Data.AttackType
-            : AttackType.Basic;
-    }
 
-    public SecondaryType GetCurrentSecondary()
-    {
-        return CurrentMask != null
-            ? CurrentMask.Data.SecondaryType
-            : SecondaryType.None;
-    }
+    public AttackType GetCurrentAttack() => CurrentMask.Data.AttackType;
 
-    public bool HasDoubleJump()
-    {
-        return CurrentMask != null
-            ? CurrentMask.Data.DoubleJump
-            : false;
-    }
+    public SecondaryType GetCurrentSecondary() => CurrentMask.Data.SecondaryType;
 
-    public bool HasDash()
-    {
-        return CurrentMask != null
-            ? GetCurrentSecondary() == SecondaryType.Dash
-            : false;
-    }
+    public bool HasDoubleJump() => CurrentMask.Data.DoubleJump;
 
-    public bool HasTeleport()
-    {
-        return CurrentMask != null
-            ? GetCurrentSecondary() == SecondaryType.Teleport
-            : false;
-    }
+    public bool HasDash() => CurrentMask.Data.SecondaryType == SecondaryType.Dash;
+
+    public bool HasTeleport() => CurrentMask.Data.SecondaryType == SecondaryType.Teleport;
+    
+    public RangedAttackData GetCurrentRangedAttack() =>
+        CurrentMask.Data.AttackType != AttackType.Ranged 
+            ? null 
+            : CurrentMask.Data.RangedProjectile;
+    
     #endregion
-
-    public RangedAttackData GetCurrentRangedAttack()
-    {
-        if (IsMaskless()) return null;
-
-        if (CurrentMask.Data.AttackType != AttackType.Ranged) return null;
-        
-        return CurrentMask.Data.RangedProjectile;
-    }
-
+    
     public void ApplyDamage(int amount)
     {
         if (_isInvincible)
             return;
         
-        SoundFXManager.instance.PlaySoundFXClip(_damagedSound, _playerSprite.transform, 1);
+        SoundFXManager.Instance.Play(_globalSounds.PlayerHit, _playerSprite.transform);
 
         OnDamageReceived?.Invoke(amount);
         if (!IsMaskless())
             CurrentMask.TakeDamage(amount);
         else
         {
-            Debug.LogError("Wait some time before showing all this?");
-            SoundFXManager.instance.PlaySoundFXClip(_gameOverSound, _playerSprite.transform, 1);
-            _playerSprite.transform.parent.parent.gameObject.SetActive(false);
-            _backgroundSource.Stop();
+            Cursor.visible = true;
+            SoundFXManager.Instance.StopLoop(transform);
+            SoundFXManager.Instance.Play(_globalSounds.GameOver, _playerSprite.transform);
             PauseManager.Instance.FreezePlayer();
             PauseManager.Instance.SetTimeFreeze(0);
+            _playerSprite.transform.parent.parent.gameObject.SetActive(false);
             OnPlayerDied?.Invoke();
         }
 

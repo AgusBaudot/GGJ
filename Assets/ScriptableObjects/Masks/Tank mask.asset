@@ -22,3 +22,4 @@ MonoBehaviour:
   DoubleJump: 0
   MaskSprite: {fileID: 21300000, guid: 177ea245e3bf1fb4a9b0807e1bd20e69, type: 3}
   MaskAnimationID: 4
+  PlayerAttack: {fileID: 11400000, guid: 7b57277b560c4f5448272d2467d59e19, type: 2}

@@ -14,9 +14,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [Header("DEPENDENCIES")]
     [SerializeField] private PlayerBaseStats _stats;
     [SerializeField] private MaskManager _maskManager;
-    [SerializeField] private AudioClip _jumpSound;
-    [SerializeField] private AudioClip _dashSound;
-    [SerializeField] private AudioClip _basicAttackSound;
+    [SerializeField] private GlobalSoundsData _globalSounds;
 
     public MaskManager MaskManager => _maskManager;
     public int GetDirection => _input.FacingDirection;
@@ -63,6 +61,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
         _teleport = GetComponent<PlayerTeleport>();
 
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
+
+        Cursor.visible = false;
 
         // Subscribe to component events (fire only when abilities actually execute)
         _jump.Jumped += OnJumped;
@@ -113,7 +113,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
             // Basic attack = tackle burst - fire Attacked only when burst actually starts
             if (attack == AttackType.Basic && !_burst.IsBursting && !_teleport.IsTeleporting)
             {
-                if (_burst.TryStartBurst(_stats.TackleData, GetDirection, _basicAttackSound, _dashSound))
+                if (_burst.TryStartBurst(_stats.TackleData, GetDirection, _maskManager, _globalSounds))
                     Attacked?.Invoke(AttackType.Basic);
             }
         }
@@ -127,7 +127,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
                     return;
 
                 case SecondaryType.Dash:
-                    _burst.TryStartBurst(_stats.DashData, GetDirection, _basicAttackSound, _dashSound);
+                    _burst.TryStartBurst(_stats.DashData, GetDirection, _maskManager, _globalSounds);
                     break;
 
                 case SecondaryType.Teleport:
@@ -286,8 +286,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void OnJumped()
     {
-        Debug.LogError("Jumped");
-        SoundFXManager.instance.PlaySoundFXClip(_jumpSound, transform, 1);
+        SoundFXManager.Instance.Play(_globalSounds.PlayerJump, transform);
         Jumped?.Invoke();
     }
 

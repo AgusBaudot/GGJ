@@ -19,11 +19,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private Transform _holdAnchor;
     [SerializeField] private ArmAnimator _armAnimator;
     [Header("AUDIO")]
-    [SerializeField] private AudioClip _fireAttack;
-    [SerializeField] private AudioClip _fogAttack;
-    [SerializeField] private AudioClip _grabAttack;
-    [SerializeField] private AudioClip _throwAttack;
-    
+    [SerializeField] private GlobalSoundsData _globalSounds;
 
     private float _lastShotTime;
     private float _grabCooldownEndTime;
@@ -75,8 +71,7 @@ public class PlayerAttack : MonoBehaviour
     {
         if (!data.DealsDamage) return;
 
-        int dmg = _maskManager.CurrentMask == null ? (int)_stats.BaseDamage : (int)_maskManager.CurrentMask.Data.DmgModifier;
-        enemy.TakeDamage(dmg);
+        enemy.TakeDamage((int)_maskManager.CurrentMask.Data.DmgModifier);
 
         if (enemy.IsAlive)
             enemy.ApplyStun(data.StunDuration);
@@ -92,10 +87,10 @@ public class PlayerAttack : MonoBehaviour
         
         _lastShotTime = Time.time;
 
-        var audioClip = _maskManager.CurrentMask.Data.name == "Fire mask"
-            ? _fireAttack
-            : _fogAttack;
-        SoundFXManager.instance.PlaySoundFXClip(audioClip, transform, 1);
+        var soundType = _maskManager.CurrentMask.Data.name == "Fire mask"
+            ? MaskSoundType.RangedFireAttack
+            : MaskSoundType.RangedFogAttack;
+        SoundFXManager.Instance.Play(_maskManager.CurrentMask.Data.PlayerAttack.Get(soundType), transform);
         
         var projectile = Instantiate(_projectilePrefab, _projectileSpawn.position, Quaternion.identity);
         
@@ -120,7 +115,9 @@ public class PlayerAttack : MonoBehaviour
         if (enemy == null) return;
 
         GrabEnemy(enemy);
-        SoundFXManager.instance.PlaySoundFXClip(_grabAttack, transform, 1);
+        SoundFXManager.Instance.Play(
+            _maskManager.CurrentMask.Data.PlayerAttack.Get(MaskSoundType.GrabAttack),
+            transform);
         AttackExecuted?.Invoke(AttackType.Grab);
     }
 
@@ -249,10 +246,10 @@ public class PlayerAttack : MonoBehaviour
         if (_playerCollider != null && enemyCol != null)
             Physics2D.IgnoreCollision(_playerCollider, enemyCol, false);
 
-        if (voluntary && _maskManager.CurrentMask != null)
+        if (voluntary && !_maskManager.IsMaskless())
         {
             var thrown = enemy.gameObject.AddComponent<ThrownEnemyController>();
-            thrown.Init((int)_maskManager.CurrentMask.Data.DmgModifier, _throwAttack);
+            thrown.Init((int)_maskManager.CurrentMask.Data.DmgModifier, _globalSounds);
         }
 
         _grabCooldownEndTime = Time.time + _stats.GrabAttackCooldown;

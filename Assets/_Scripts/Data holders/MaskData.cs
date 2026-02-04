@@ -36,6 +36,8 @@ public class MaskData : ScriptableObject
     [Header("ANIMATION")]
     [Tooltip("ID for Animator's MaskEquipped int parameter. 0 = maskless/default. Each mask type gets a unique ID.")]
     public int MaskAnimationID = 1;
+
+    [Header("AUDIO")] public MaskSoundSet PlayerAttack;
 }
 
 public enum AttackType

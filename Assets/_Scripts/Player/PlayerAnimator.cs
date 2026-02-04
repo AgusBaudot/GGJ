@@ -7,14 +7,14 @@ using Random = UnityEngine.Random;
 
 public class PlayerAnimator : MonoBehaviour
 {
-    [Header("References")]
+    [Header("REFERENCES")]
     [SerializeField] private Animator _anim;
     [SerializeField] private ArmAnimator _armAnim;
     [SerializeField] private SpriteRenderer _sprite;
     [SerializeField] private MaskManager _maskManager;
     [SerializeField] private Transform _projectileSpawnpoint;
 
-    [Header("Particles")] 
+    [Header("PARTICLES")] 
     [SerializeField] private ParticleSystem _jumpParticles;
     [SerializeField] private ParticleSystem _launchParticles;
     [SerializeField] private ParticleSystem _moveParticles;
@@ -22,17 +22,15 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField] private ParticleSystem _doubleJumpParticles;
     [SerializeField] private ParticleSystem _dashParticles;
 
-    [Header("Audio Clips")] [SerializeField]
-    private AudioClip _teleportSound;
+    [Header("AUDIO")]
+    [SerializeField] private GlobalSoundsData _globalSounds;
 
-    private AudioSource _source;
     private IPlayerController _player;
     private bool _grounded;
     private ParticleSystem.MinMaxGradient _currentGradient;
 
     private void Awake()
     {
-        _source = GetComponent<AudioSource>();
         _player = GetComponentInParent<IPlayerController>();
         _armAnim = GetComponentInChildren<ArmAnimator>();
     }
@@ -129,7 +127,7 @@ public class PlayerAnimator : MonoBehaviour
 
     private void OnTeleportStarted()
     {
-        SoundFXManager.instance.PlaySoundFXClip(_teleportSound, transform, 0.8f);
+        SoundFXManager.Instance.Play(_globalSounds.PlayerTeleport, transform);
         _anim.SetTrigger(TeleportKey);
     }
 
@@ -162,13 +160,8 @@ public class PlayerAnimator : MonoBehaviour
         _anim.SetTrigger(PlayerDiedKey);
     }
 
-    private void SyncMaskState()
-    {
-        if (_maskManager.IsMaskless())
-            _anim.SetFloat(MaskEquippedKey, 0);
-        else if (_maskManager.CurrentMask != null)
-            _anim.SetFloat(MaskEquippedKey, _maskManager.CurrentMask.Data.MaskAnimationID);
-    }
+    private void SyncMaskState() =>
+        _anim.SetFloat(MaskEquippedKey, _maskManager.CurrentMask.Data.MaskAnimationID);
 
     private void OnAttacked(AttackType type)
     {

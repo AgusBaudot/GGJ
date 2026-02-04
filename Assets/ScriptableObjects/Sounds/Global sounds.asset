@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7542924dd1ea65b4cb241a57bfad19fa, type: 3}
+  m_Name: Global sounds
+  m_EditorClassIdentifier: 
+  Playing: {fileID: 11400000, guid: 11e6f98883c740349b0ca7fadcc0348c, type: 2}
+  GameOver: {fileID: 11400000, guid: 00e97dbbde028ef43a7b6d52db50a3a4, type: 2}
+  PlayerWalk: {fileID: 11400000, guid: a1d3b63c5bad21a4e9270a9baf880900, type: 2}
+  PlayerJump: {fileID: 11400000, guid: e9b8ca1189fec8647ab37b9fb415839d, type: 2}
+  PlayerTeleport: {fileID: 11400000, guid: ce69b1f1880266f41b4ac84ef560e8e8, type: 2}
+  PlayerDash: {fileID: 11400000, guid: 4066f874c503ded489051321a7afc067, type: 2}
+  PlayerEquipMask: {fileID: 11400000, guid: 678636563f2dff64d9273346c63da67e, type: 2}
+  PlayerBreakMask: {fileID: 11400000, guid: 554355bc877500947b2d88eba64cd465, type: 2}
+  PlayerHit: {fileID: 11400000, guid: 670484549ce2aaf4f9b9a47febbb9df3, type: 2}
+  EnemyImpactAfterThrow: {fileID: 11400000, guid: 7d83b36147ff7c4418a18d2c33cff105, type: 2}
+  EnemyDeath: {fileID: 11400000, guid: b09052eebae3480418a1308fa0670d4b, type: 2}
+  ButtonClick: {fileID: 11400000, guid: 11f2fda7f4090a64fa6c4d21e20fa0f9, type: 2}

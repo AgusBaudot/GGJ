@@ -9,17 +9,17 @@ public class ThrownEnemyController : MonoBehaviour
 {
     private int _damageAmount;
     private bool _damageApplied;
-    private AudioClip _impactSound;
+    private GlobalSoundsData _globalSounds;
 
-    public void Init(int damageAmount, AudioClip audio)
+    public void Init(int damageAmount, GlobalSoundsData sounds)
     {
         _damageAmount = damageAmount;
-        _impactSound = audio;
+        _globalSounds = sounds;
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        SoundFXManager.instance.PlaySoundFXClip(_impactSound, transform, 1);
+        SoundFXManager.Instance.Play(_globalSounds.EnemyImpactAfterThrow, transform);
         
         if (_damageApplied) return;
 

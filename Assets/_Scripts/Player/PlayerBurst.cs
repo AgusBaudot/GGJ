@@ -24,23 +24,21 @@ public class PlayerBurst : MonoBehaviour
         _time += Time.deltaTime;
     }
 
-    public bool TryStartBurst(MovementDashData data, int direction, AudioClip attackFX, AudioClip dashFX)
+    public bool TryStartBurst(MovementDashData data, int direction, MaskManager manager, GlobalSoundsData globalSounds)
     {
         if (_isBursting) return false;
         if (_time < _burstCooldownEndTime) return false;
 
         _currentBurst = data;
         _isBursting = true;
-
         
-        // INVERTED ON PURPOSE. THEY SUIT BETTER THE OTHER ONE.
         if (!data.DealsDamage)
         {
-            SoundFXManager.instance.PlaySoundFXClip(attackFX, transform, 0.3f);
+            SoundFXManager.Instance.Play(globalSounds.PlayerDash, transform);
             Dashed?.Invoke();
         }
         else
-            SoundFXManager.instance.PlaySoundFXClip(dashFX, transform, 0.05f);
+            SoundFXManager.Instance.Play(manager.CurrentMask.Data.PlayerAttack.Get(MaskSoundType.BasicAttack), transform);
         
 
         _burstDirection = Vector2.right * direction;

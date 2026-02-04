@@ -14,7 +14,7 @@ public class DevTools : MonoBehaviour
                 manager.AddMaskToStack(masks[1]);
         if (Input.GetKeyDown(KeyCode.Alpha3))
                 manager.AddMaskToStack(masks[2]);
-            if (Input.GetKeyDown(KeyCode.Alpha4))
-                manager.AddMaskToStack(masks[3]);
+        if (Input.GetKeyDown(KeyCode.Alpha4)) 
+            manager.AddMaskToStack(masks[3]);
     }
 }
