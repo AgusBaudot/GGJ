@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7986571306419665863}
   - component: {fileID: 7986571306419665862}
   - component: {fileID: 5342201918060153381}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,7 +117,7 @@ GameObject:
   - component: {fileID: 7986571306740652337}
   - component: {fileID: 7986571306740652339}
   - component: {fileID: 7986571306740652336}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}

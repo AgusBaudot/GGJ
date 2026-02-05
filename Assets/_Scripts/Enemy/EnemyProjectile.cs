@@ -17,16 +17,19 @@ public class EnemyProjectile : MonoBehaviour
         _direction = direction.normalized;
         _spawnTime = Time.time;
 
-        var renderer = GetComponentInChildren<SpriteRenderer>();
-        if (renderer)
-        {
-            renderer.sprite = data.ProjectileSprite;
-            renderer.flipX = direction.x < 0;
-        }
+        // var renderer = GetComponentInChildren<SpriteRenderer>();
+        // if (renderer)
+        // {
+        //     renderer.sprite = data.ProjectileSprite;
+        //     renderer.flipX = direction.x < 0;
+        // }
         
         var anim = GetComponentInChildren<Animator>();
         if (anim && data.AnimatorOverride)
             anim.runtimeAnimatorController = data.AnimatorOverride;
+        
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
     private void Update()

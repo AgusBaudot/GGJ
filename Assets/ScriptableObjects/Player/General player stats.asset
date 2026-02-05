@@ -18,6 +18,9 @@ MonoBehaviour:
   GroundLayers:
     serializedVersion: 2
     m_Bits: 264
+  InvisibleWallLayer:
+    serializedVersion: 2
+    m_Bits: 512
   SnapInput: 1
   VerticalDeadZoneThreshold: 0.3
   HorizontalDeadZoneThreshold: 0.1

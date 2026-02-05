@@ -48,6 +48,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     #endregion
 
+    #region Unity methods
+
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -167,6 +169,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         _movement.SetVelocity(velocity);
         _movement.ApplyVelocity();
     }
+    #endregion
 
     #region Collisions
 
@@ -218,6 +221,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private void OnTriggerExit2D(Collider2D other)
     {
         if (!other.TryGetComponent(out MaskPickup mask)) return;
+        Debug.LogWarning("Hide 'E' sprite above player's head");
         if (_nearbyMask == mask)
             _nearbyMask = null;
     }

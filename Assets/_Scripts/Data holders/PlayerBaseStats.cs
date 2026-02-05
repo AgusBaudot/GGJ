@@ -10,6 +10,7 @@ public class PlayerBaseStats : ScriptableObject
     [Header("LAYERS")]
     [Tooltip("The layer the player is on.")] public LayerMask PlayerLayer;
     [Tooltip("The layers the game will interpret as ground.")] public LayerMask GroundLayers;
+    [Tooltip("The layer that the invisible wall is on.")] public LayerMask InvisibleWallLayer;
 
     [Header("INPUT")]
     [Tooltip(

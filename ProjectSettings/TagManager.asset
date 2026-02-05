@@ -14,11 +14,11 @@ TagManager:
   - Water
   - UI
   - Player
-  - Tank
+  - Enemy
   - Platforms
-  - 
-  - 
-  - 
+  - Invisible wall
+  - Player projectile
+  - Enemy projectile
   - 
   - 
   - 

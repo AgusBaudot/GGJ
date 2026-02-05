@@ -23,17 +23,20 @@ public class PlayerTeleport : MonoBehaviour
     {
         target = Vector2.zero;
 
-        if (!_canTeleport) return false;
+        if (!_canTeleport)
+            return false;
 
         Vector2 dir = new Vector2(direction, 0f);
         Vector2 origin = _col.bounds.center;
         float distance = _stats.TeleportDistance;
+        
+        LayerMask teleportCollisionMask = _stats.GroundLayers | _stats.InvisibleWallLayer;
 
         bool cached = Physics2D.queriesStartInColliders;
         Physics2D.queriesStartInColliders = true;
 
         RaycastHit2D hit = Physics2D.CapsuleCast(
-            origin, _col.size * 0.9f, _col.direction, 0f, dir, distance, _stats.GroundLayers
+            origin, _col.size * 0.9f, _col.direction, 0f, dir, distance, teleportCollisionMask
         );
 
         target = hit ? hit.centroid : origin + dir * distance;
