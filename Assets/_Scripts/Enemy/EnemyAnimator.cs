@@ -5,6 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Controls the enemy Animator based on state: idle (player out of range), run (moving), jump (in air), attack (trigger), die (trigger).
 /// Guardian-specific: GrabWindup (trigger), GrabSuccess (trigger), GrabFailed (trigger) for windup → success/failed flow.
+/// Stun handling: Freezes animation and applies visual tint when enemy is stunned.
 /// </summary>
 [RequireComponent(typeof(Animator))]
 public class EnemyAnimator : MonoBehaviour
@@ -14,9 +15,14 @@ public class EnemyAnimator : MonoBehaviour
     [SerializeField] private float _deathAnimationDuration = 0.5f;
     [Tooltip("Horizontal speed threshold to consider the enemy 'running'.")]
     [SerializeField] private float _runSpeedThreshold = 0.1f;
+    
+    [Header("Stun Visual Settings")]
+    [Tooltip("Color tint applied when enemy is stunned (default: light blue).")]
+    [SerializeField] private Color _stunTintColor = new Color(0.7f, 0.7f, 1f);
 
     private Enemy _enemy;
     private Animator _anim;
+    private SpriteRenderer _spriteRenderer;
     private bool _isGrounded;
     private bool _cachedQueryStartInColliders;
 
@@ -26,6 +32,7 @@ public class EnemyAnimator : MonoBehaviour
     {
         _enemy = GetComponentInParent<Enemy>();
         _anim = GetComponent<Animator>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
         
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
     }
@@ -40,6 +47,8 @@ public class EnemyAnimator : MonoBehaviour
             _enemy.OnAttackWindupStarted += TriggerGrabWindup;
             _enemy.OnAttackSucceeded += TriggerGrabSuccess;
             _enemy.OnAttackFailed += TriggerGrabFailed;
+            _enemy.OnStunned += OnEnemyStunned;
+            _enemy.OnStunRecovered += OnEnemyStunRecovered;
         }
     }
 
@@ -51,6 +60,8 @@ public class EnemyAnimator : MonoBehaviour
             _enemy.OnAttackWindupStarted -= TriggerGrabWindup;
             _enemy.OnAttackSucceeded -= TriggerGrabSuccess;
             _enemy.OnAttackFailed -= TriggerGrabFailed;
+            _enemy.OnStunned -= OnEnemyStunned;
+            _enemy.OnStunRecovered -= OnEnemyStunRecovered;
         }
     }
 
@@ -60,15 +71,40 @@ public class EnemyAnimator : MonoBehaviour
 
         CheckGrounded();
 
-        // Idle: true when not moving (e.g. Guardian during windup). Mutually exclusive with Walking.
-        bool isMoving = Mathf.Abs(_enemy.Rb.velocity.x) > _runSpeedThreshold;
-        _anim.SetBool(IdleKey, !isMoving);
-
-        // Walking: true when moving horizontally (matches Player / old Guardian "Walking" param).
-        _anim.SetBool(WalkingKey, isMoving);
-
-        // Grounded: true when on ground. Animator transitions to Jump when false (matches Player).
-        _anim.SetBool(GroundedKey, _isGrounded);
+        // Handle stun state
+        if (_enemy.IsStunned)
+        {
+            // Freeze animation
+            _anim.speed = 0f;
+            
+            // Apply visual stun tint
+            if (_spriteRenderer != null)
+                _spriteRenderer.color = _stunTintColor;
+            
+            // Reset animation bools to prevent stuck states
+            _anim.SetBool(IdleKey, false);
+            _anim.SetBool(WalkingKey, false);
+            _anim.SetBool(GrabWindupKey, false); // Cancel any ongoing windup
+            
+            // Set stunned parameter for animator (in case you want a dedicated stun state)
+            _anim.SetBool(StunnedKey, true);
+        }
+        else
+        {
+            // Normal animation speed
+            _anim.speed = 1f;
+            
+            // Reset visual tint
+            if (_spriteRenderer != null)
+                _spriteRenderer.color = Color.white;
+            
+            // Update movement animations
+            bool isMoving = Mathf.Abs(_enemy.Rb.velocity.x) > _runSpeedThreshold;
+            _anim.SetBool(IdleKey, !isMoving);
+            _anim.SetBool(WalkingKey, isMoving);
+            _anim.SetBool(GroundedKey, _isGrounded);
+            _anim.SetBool(StunnedKey, false);
+        }
     }
 
     private void CheckGrounded()
@@ -98,6 +134,7 @@ public class EnemyAnimator : MonoBehaviour
 
     private void TriggerAttack()
     {
+        if (_enemy.IsStunned) return; // Don't trigger attack if stunned
         _anim.SetTrigger(AttackKey);
     }
 
@@ -106,6 +143,7 @@ public class EnemyAnimator : MonoBehaviour
     /// </summary>
     private void TriggerGrabWindup()
     {
+        if (_enemy.IsStunned) return; // Don't start windup if stunned
         _anim.SetBool(GrabWindupKey, true);
     }
 
@@ -133,7 +171,18 @@ public class EnemyAnimator : MonoBehaviour
     public void TriggerDeath()
     {
         _anim.SetTrigger(DieKey);
-        // yield return Helpers.GetWait(_enemy.Data.DeathWindup);
+    }
+
+    private void OnEnemyStunned()
+    {
+        // Additional logic when enemy gets stunned (if needed)
+        // Already handled in Update() loop
+    }
+
+    private void OnEnemyStunRecovered()
+    {
+        // Additional logic when enemy recovers from stun (if needed)
+        // Already handled in Update() loop
     }
 
     private static readonly int EnemyIDKey = Animator.StringToHash("EnemyType");
@@ -143,6 +192,7 @@ public class EnemyAnimator : MonoBehaviour
     private static readonly int GroundedKey = Animator.StringToHash("Grounded");
     private static readonly int AttackKey = Animator.StringToHash("Attack");
     private static readonly int DieKey = Animator.StringToHash("Die");
+    private static readonly int StunnedKey = Animator.StringToHash("Stunned");
     private static readonly int GrabWindupKey = Animator.StringToHash("GrabWindup");
     private static readonly int GrabSuccessKey = Animator.StringToHash("GrabSuccess");
     private static readonly int GrabFailedKey = Animator.StringToHash("GrabFailed");

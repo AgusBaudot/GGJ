@@ -43,11 +43,23 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Parallax
+  - name: Backgorund
     uniqueID: 4264829069
+    locked: 0
+  - name: MidGround
+    uniqueID: 2246330123
     locked: 0
   - name: Special_BG
     uniqueID: 4182495113
+    locked: 0
+  - name: Other
+    uniqueID: 3358564209
+    locked: 0
+  - name: Entities
+    uniqueID: 4117007891
+    locked: 0
+  - name: Foreground
+    uniqueID: 247085527
     locked: 0
   - name: UI
     uniqueID: 2741421587

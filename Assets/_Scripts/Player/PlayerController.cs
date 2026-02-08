@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [SerializeField] private PlayerBaseStats _stats;
     [SerializeField] private MaskManager _maskManager;
     [SerializeField] private GlobalSoundsData _globalSounds;
+    [SerializeField] private SpriteRenderer _grabMaskSprite;
 
     public MaskManager MaskManager => _maskManager;
     public int GetDirection => _input.FacingDirection;
@@ -63,6 +64,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         _teleport = GetComponent<PlayerTeleport>();
 
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
+        _grabMaskSprite.enabled = false;
 
         Cursor.visible = false;
 
@@ -214,43 +216,60 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.TryGetComponent(out MaskPickup mask)) return;
-        Debug.LogWarning("Show 'E' sprite above player's head");
+        _grabMaskSprite.enabled = true;
         _nearbyMask = mask;
+
+        mask.OnDestroy += OnNearbyMaskDestroyed;
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         if (!other.TryGetComponent(out MaskPickup mask)) return;
-        Debug.LogWarning("Hide 'E' sprite above player's head");
+        _grabMaskSprite.enabled = false;
+        
+        mask.OnDestroy += OnNearbyMaskDestroyed;
+        
         if (_nearbyMask == mask)
             _nearbyMask = null;
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        //Player and enemy collide
-        //if player is tackling, player does damage to enemy and stuns him
-        //else
-        //enemy does damage to player
-
-        //First ensure collision is with enemy.
-        if (!other.gameObject.TryGetComponent(out Enemy enemy)) return;
-
-        //If player isn't tackling, damage him.
-        if (!_burst.IsBursting || _burst.CurrentBurst == null)
+        //Check for Enemy
+        if (other.gameObject.TryGetComponent(out Enemy enemy))
         {
-            enemy.TryAttack();
-        }
-        //If player was tackling, damage and stun enemy
-        else
-        {
-            _playerAttack.OnBurstHitEnemy(enemy, _burst.CurrentBurst);
-            Debug.LogWarning("Differentiate somehow early burst end.");
-            _burst.EndBurst();
+            //If the player isn't tackling, enemy damages player.
+            if (!_burst.IsBursting || _burst.CurrentBurst == null)
+                enemy.TryAttack();
+            //If player was tackling, damage and stun enemy.
+            else
+            {
+                _playerAttack.OnBurstHitEnemy(enemy, _burst.CurrentBurst);
+                Debug.LogWarning("Differentiate somehow early burst end.");
+                _burst.EndBurst();
+            }
+            return; //Exit early after handling enemy.
         }
 
-        // if (other.gameObject.TryGetComponent(out Enemy enemy))
-        // _playerAttack.OnBurstHitEnemy(enemy, _burst.CurrentBurst);
+        if (other.gameObject.TryGetComponent(out TutorialDummy dummy))
+        {
+            //Only damage dummy if player is bursting (basic attack/tackle)
+            if (_burst.IsBursting && _burst.CurrentBurst != null)
+            {
+                //Check if it's the basic attack burst (tackle)
+                if (_burst.CurrentBurst == _stats.TackleData)
+                {
+                    dummy.TakeDamage(1); //Always deal 1 dmg to enemy.
+                    _burst.EndBurst(); //End the tackle.
+                }
+            }
+        }
+    }
+    
+    private void OnNearbyMaskDestroyed()
+    {
+        _grabMaskSprite.enabled = false;
+        _nearbyMask = null;
     }
 
     #endregion

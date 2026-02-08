@@ -40,6 +40,16 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public event Action OnAttackFailed;
 
+    /// <summary>
+    /// Fired when the enemy gets stunned. Used by EnemyAnimator.
+    /// </summary>
+    public event Action OnStunned;
+
+    /// <summary>
+    /// Fired when the enemy recovers from stun. Used by EnemyAnimator.
+    /// </summary>
+    public event Action OnStunRecovered;
+
     private MaskSpawner _maskSpawner;
     private int _currentHp;
     private bool _stunned;
@@ -107,6 +117,7 @@ public class Enemy : MonoBehaviour
         if (_stunned) return;
         _stunned = true;
         _behavior?.OnStunned();
+        OnStunned?.Invoke();
     }
 
     public void ApplyStun(float duration)
@@ -114,6 +125,7 @@ public class Enemy : MonoBehaviour
         if (_stunned) return;
         _stunned = true;
         _behavior?.OnStunned();
+        OnStunned?.Invoke();
         StartCoroutine(TickStun(duration));
     }
     
@@ -122,11 +134,14 @@ public class Enemy : MonoBehaviour
         yield return Helpers.GetWait(duration);
         _stunned = false;
         _behavior?.OnStunEnded();
+        OnStunRecovered?.Invoke();
     }
 
     public void RemoveStun()
     {
         _stunned = false;
+        _behavior?.OnStunEnded();
+        OnStunRecovered?.Invoke();
     }
     
     public void TakeDamage(int amount)
@@ -206,5 +221,4 @@ public class Enemy : MonoBehaviour
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(transform.position, Data.FleeDistance);
     }
-
 }
